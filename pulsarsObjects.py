@@ -7,6 +7,7 @@ class Pulsar:
     # constructor of the pulsar
     def __init__(self,pulsardata):
         # read the array
+        self.ID = pulsardata[0]
         self.name = pulsardata[1]
         self.RAJD = pulsardata[2]
         self.DECJD = pulsardata[3]
@@ -21,6 +22,10 @@ class Pulsar:
         self.distance = pulsardata[12]
 
     # basically get functions of the class
+    @property
+    def getID(self):
+        return self.ID
+
     @property
     def getName(self):
         return self.name
