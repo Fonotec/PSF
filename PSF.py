@@ -9,6 +9,7 @@ from matplotlib.pyplot import figure, show
 import scipy as sc
 import scipy.optimize as sco
 import sys
+from startscreen import startScreen
 
 ###################################
 ## PSF (Pulsar Spectral Folder) ###
@@ -35,19 +36,7 @@ import sys
 # DM and can have values ranging from 2 till 
 # 100+ for more distant pulsars.
 
-print('####################################')
-print('### PSF (PULSAR SPECTRAL FOLDER) ###')
-print('####################################')
-print('###         VERSION 1.0.1        ###')
-print('####################################')
-print('###           AUTHORS:           ###')
-print('### ROI KUGUL AND FOLKERT NOBELS ###')
-print('####################################')
-print('###  THE AUTHORS THANK YOU FOR   ###')
-print('###    USING PSF, THE FASTEST    ###')
-print('###        PULSAR CODE IN        ###')
-print('###      THE LOCAL UNIVERSE      ###')
-print('####################################')
+startScreen('1.0.1')
 
 ###################################
 ## LAYOUT OF THE PROGRAM ##########
@@ -71,8 +60,8 @@ print('####################################')
 ###################################
 t1 = time.time()
 
-stats_dict={"PSRB054": (0.71452, 20.7), "PSRB2016": (0.55795348, 14.20), "PSRB1929": (0.226518, 0.20), "PSRJ2145": (0.016052, 9.00 ), 
-            "PSRB1859": 0.655450, 0.3, "PSRB2154": (1.525266, 71.12), "PSRB1946": (0.717311, 129.3)}
+#stats_dict={"PSRB054": (0.71452, 20.7), "PSRB2016": (0.55795348, 14.20), "PSRB1929": (0.226518, 0.20), "PSRJ2145": (0.016052, 9.00 ), 
+#            "PSRB1859": 0.655450, 0.3, "PSRB2154": (1.525266, 71.12), "PSRB1946": (0.717311, 129.3)}
 
 # The period of the pulsar          
 #period = 0.71452    #PSRB054         

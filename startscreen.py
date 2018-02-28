@@ -1,0 +1,44 @@
+#!/usr/bin/env python
+import numpy as np
+
+def startScreen(version):
+    # total display length
+    totallen = 70
+    # make a hashtac line with this length
+    hashline = '#'*totallen
+    # name of the code
+    name = 'PSF (PULSAR SPECTRAL FOLDER)'
+    # make an array of the version
+    version = 'VERSION '+version
+    # length of hashtacs on the left and right
+    minlen = 3
+    # make the minimum hashtac string
+    hashmin = '#'*minlen 
+    authors = 'AUTHORS:'   
+
+    # print the hashtac line
+    hashLine()
+    printString(name)
+    hashLine()
+    printString(version)
+    hashLine()
+    printString(authors)
+    printString('ROI KUGUL AND FOLKERT NOBELS')
+    hashLine()
+    printString('THE AUTHORS THANK YOU FOR USING PSF, THE FASTEST PULSAR')
+    printString('SPECTRAL FOLDING CODE IN THE LOCAL UNIVERSE')
+    hashLine()
+
+def printString(string,lengthside=3,totallength=70):
+    lenstr = len(string)
+    spacing = (totallength-2*lengthside-lenstr)/2
+    floorspacing = int(np.floor(spacing))
+    if spacing%1==0:
+        print('#'*lengthside+' '*floorspacing+string+' '*floorspacing+'#'*lengthside)
+    else:
+        print('#'*lengthside+' '*floorspacing+string+' '*(floorspacing+1)+'#'*lengthside)
+
+def hashLine(characters=70):
+    print('#'*characters)
+
+
