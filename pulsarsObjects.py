@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 import numpy as np
 
-pulsardata = np.genfromtxt('pulsardata.txt', dtype=None)
-
 # class for pulsars
 
 class Pulsar:
@@ -76,13 +74,4 @@ class Pulsar:
     def getPulseFlux(self):
         return self.S400/self.W50
 
-    
-
-pulsarlist = []
-
-for i in range(0,len(pulsardata)):
-    currentpulsar = pulsardata[i]
-    pulsarlist.append(Pulsar(currentpulsar))
-
-print(pulsarlist[1].getName)
 

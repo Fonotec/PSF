@@ -187,7 +187,7 @@ if comptime==True:
 t1 = time.time()
 
 # Making sure counting starts at 0
-twodarray[:,0] = twodarray[:,0]-np.min(twodarray[:,0]) 
+twodarray[:,0] = twodarray[0:,0]-np.min(twodarray[:,0]) 
 
 # Number of bins per period
 nbins = int(round(period/dt))
