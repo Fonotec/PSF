@@ -8,7 +8,7 @@ class Pulsar:
     def __init__(self,pulsardata):
         # read the array
         self.ID = pulsardata[0]
-        self.name = pulsardata[1]
+        self.name = pulsardata[1].decode("utf-8")
         self.RAJD = pulsardata[2]
         self.DECJD = pulsardata[3]
         self.period = pulsardata[4]

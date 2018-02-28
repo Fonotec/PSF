@@ -29,7 +29,7 @@ for i in range(0,len(pulsardata)):
     pulsarlist.append(Pulsar(currentpulsar))
 
 # Specify your pulsar
-pulsarname = b'B0329+54'
+pulsarname = 'B0329+54'
 
 pulsar = 'None'
 # search for the correct pulsar
