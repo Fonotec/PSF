@@ -34,4 +34,6 @@ def loader(name):
     # 0th element is an arbitary counter and the remaining
     # ones are the frequency bins. 
     # This means the array needs to be reshaped as follows:
+
+
     return np.reshape(data_array,(int(len(data_array)/256),256))
