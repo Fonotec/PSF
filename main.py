@@ -13,7 +13,7 @@ from pulsarsObjects import Pulsar
 from loadData import loader
 from folding import timeFolding
 from plotTools import waterfall
-
+from flagging import flagData
 
 startScreen('1.1.0')
 
@@ -67,7 +67,7 @@ stepsize = dt*nbins/period
 # this part should be RFI flagging something like:
 # noflag = flagging(twodarray)
 
-noflag=twodarray[:,0]>0
+noflag=flagData(twodarray)
 # for the moment lets make everything not flagged
 
 foldedarray = timeFolding(twodarray,nbins,stepsize,noflag)
