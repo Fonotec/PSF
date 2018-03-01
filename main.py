@@ -14,6 +14,7 @@ from loadData import loader
 from folding import timeFolding
 from plotTools import waterfall
 from flagging import flagData
+from dispersionMeasure import dedispersion, pulseProfile
 
 startScreen('1.1.0')
 
@@ -52,6 +53,7 @@ dt = (512*64)/(70e6)
 
 # Array with the bandwith
 frequencyarray = np.linspace(0.402,0.433,255)
+frequencyarray = np.linspace(0.399,0.44,255)
 
 # load the data
 twodarray = loader('B0329 54.2016.11.18.1038.5min.dat')
@@ -68,11 +70,51 @@ stepsize = dt*nbins/period
 # noflag = flagging(twodarray)
 
 noflag=flagData(twodarray)
-# for the moment lets make everything not flagged
+# for the moment lets make everything not flagged, if this function is changed it will 
+# be easy to extend on this
 
+# calculate the folded array
 foldedarray = timeFolding(twodarray,nbins,stepsize,noflag)
 
-waterfall(foldedarray)
+# make a waterfall plot of the result
+#waterfall(foldedarray)
+
+# do the dedispersion
+
+print(DM,period)
+
+waterfall(dedispersion(foldedarray,DM,frequencyarray))
+
+plt.plot(pulseProfile(foldedarray,DM,frequencyarray))
+plt.show()
+
+
+'''
+#Array for plotting the period
+periodtime = np.linspace(0,period,nbins)
+
+#Summing for the final puls profile
+finalpulsprofile = np.sum(normalisedfoldedarray,axis=1)
+#Plotting
+from matplotlib.pyplot import figure, show
+fig = figure(figsize=(20,10))
+frame = fig.add_subplot(1,1,1)
+frame.plot(periodtime,np.roll(finalpulsprofile,100))
+show()
+
+plt.matshow(np.log10(normalisedfoldedarray))
+plt.savefig('dedispersed.png') 
+plt.show()
+plt.close()
+'''
+
+
+
+
+
+
+
+
 
 
 
