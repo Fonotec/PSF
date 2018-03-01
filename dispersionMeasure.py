@@ -1,9 +1,8 @@
 #!/usr/bin/env python
 import numpy as np
-
+import scipy.optimize as sco
 
 def dedispersion(foldedarray,DM,frequencies,dt=(512*64)/70e6):
-    print(DM)
     timedelays = 4.15e-3*DM*(frequencies[0]**(-2)-frequencies**(-2))
     #binshifts = np.round(timedelays/dt)
     binshifts = timedelays/dt
@@ -29,3 +28,14 @@ def pulseProfile(foldedarray,DM,frequencies):
     dedispersed = dedispersion(foldedarray,DM,frequencies)
     return np.sum(dedispersed,axis=1)
 
+def fitDM(foldedarray,frequencies,dt=(512*64)/70e6):
+
+    maxchannel = np.argmax(foldedarray,axis=0)
+
+    fitresults = sco.curve_fit(DMfunction,frequencies[10:100],maxchannel[10:100],p0=[10,1000,frequencies[0]])
+
+
+    return maxchannel,fitresults
+
+def DMfunction(freq,DM,A,freqmin):
+    return 4.15e-3*DM*(freqmin**(-2)-freq**(-2))+A
