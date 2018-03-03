@@ -56,7 +56,7 @@ frequencyarray = np.linspace(0.402,0.433,255)*1e3
 #frequencyarray = np.linspace(0.399,0.44,255)
 
 # load the data
-twodarray = loader('B0329 54.2016.11.18.1038.5min.dat')
+twodarray = loader('PSR_B0329+54_B.raw')
 
 
 # part for folding
@@ -69,7 +69,7 @@ stepsize = dt*nbins/period
 # this part should be RFI flagging something like:
 # noflag = flagging(twodarray)
 
-noflag=flagData(twodarray)
+noflag=~flagData(twodarray)
 # for the moment lets make everything not flagged, if this function is changed it will 
 # be easy to extend on this
 
