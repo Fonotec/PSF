@@ -7,7 +7,7 @@ import time
 import matplotlib.pyplot as plt
 import scipy as sc
 import scipy.optimize as sco
-import sys
+import argparse
 from startscreen import startScreen
 from pulsarsObjects import Pulsar
 from loadData import loader
@@ -17,6 +17,15 @@ from flagging import flagData
 from dispersionMeasure import dedispersion, pulseProfile, fitDM, DMfunction
 
 startScreen('1.1.0')
+
+
+parser = argparse.ArgumentParser(description='Pulsar folding!')
+parser.add_argument('-d', '--datafile', default='/net/dataserver2/data/users/nobels/CAMRAS/B0329 54.2016.11.18.1038.5min.dat', help='The location of the *.raw or *.dat data file.')
+parser.add_argument('--pulsarname', default='B0329+54', help='The name of the pulsar, as noted in the database, \'pulsardata.txt\'.')
+parser.add_argument('-b','--nbins', default=200, help='The number of phase bins to fold with. Higher means higher time resolution, but noisier folds.')
+args = parser.parse_args()
+
+
 
 # read the data of the pulsar database
 pulsardata = np.genfromtxt('pulsardata.txt', dtype=None)
@@ -30,19 +39,19 @@ for i in range(0,len(pulsardata)):
     pulsarlist.append(Pulsar(currentpulsar))
 
 # Specify your pulsar
-pulsarname = 'B0329+54'
+pulsarname = args.pulsarname
 
-pulsar = 'None'
+pulsar = None
 # search for the correct pulsar
 for i in range(0,len(pulsarlist)):
     if pulsarlist[i].getName == pulsarname:
         pulsar = pulsarlist[i]
 
 # check if we actually found the pulsar in the data base
-if pulsar=='None':
+if pulsar is None:
     print('Your defined pulsar is not found in the database')
     print('Program exits with an ERROR!!')
-    exit(0)
+    exit(1)
 
 # read the literature value of the period and the dispersion measure
 period = pulsar.period
@@ -57,7 +66,7 @@ frequencyarray = np.linspace(0.402,0.433,255)*1e3
 #frequencyarray = np.linspace(0.399,0.44,255)
 
 # load the data
-twodarray = loader('/net/dataserver2/data/users/nobels/CAMRAS/B0329 54.2016.11.18.1038.5min.dat')
+twodarray = loader(args.datafile)
 
 
 # part for folding
@@ -75,7 +84,7 @@ noflag=~flagData(twodarray)
 # be easy to extend on this
 
 # calculate the folded array
-foldedarray = timeFolding(twodarray,nbins,period,noflag)
+foldedarray = timeFolding(twodarray, args.nbins, period, noflag)
 
 # make a waterfall plot of the result
 #waterfall(foldedarray)
@@ -97,13 +106,3 @@ print(fitres)
 plt.plot(frequencyarray,maximum[1:])
 plt.plot(frequencyarray,DMfunction(frequencyarray,fitres[0][0],fitres[0][1],fitres[0][2]))
 plt.show()
-
-
-
-
-
-
-
-
-
-
