@@ -79,12 +79,12 @@ stepsize = dt*nbins/period
 # this part should be RFI flagging something like:
 # noflag = flagging(twodarray)
 
-noflag=~flagData(twodarray)
+flag=flagData(twodarray)
 # for the moment lets make everything not flagged, if this function is changed it will 
 # be easy to extend on this
 
 # calculate the folded array
-foldedarray = timeFolding(twodarray, args.nbins, period, noflag)
+foldedarray = timeFolding(twodarray, args.nbins, period, flag)
 
 # make a waterfall plot of the result
 #waterfall(foldedarray)

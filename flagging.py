@@ -22,4 +22,4 @@ def flagData(data, nwindow=100001, signific=5):
         std = residuals.std()
         indbad[:,i] |=  residuals > signific*std
         indbad[:,i] |=  residuals < -signific*std
-    return np.where(indbad)
+    return indbad

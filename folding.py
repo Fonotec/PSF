@@ -5,7 +5,7 @@ from tqdm import tqdm # A nice progress bar, can be installed using, even on ast
 
 dt = (512*64)/(70e6)
 
-def timeFolding(data_array,nbins,period,notflagged, progressbar=True):
+def timeFolding(data_array,nbins,period,flagged, progressbar=True):
     stepsize = dt*nbins/period
     # Making sure counting starts at 0
     data_array[:,0] = data_array[:,0]-np.min(data_array[:,0]) 
@@ -51,8 +51,8 @@ def timeFolding(data_array,nbins,period,notflagged, progressbar=True):
         
         # Neglect the flagged indices by setting the normalization 
         # factors to 0
-        highernorm[~notflagged[i]] = 0
-        lowernorm[~notflagged[i]] = 0
+        highernorm[flagged[i]] = 0
+        lowernorm[flagged[i]] = 0
         ## Storing the data ##
 
         # Here we store the for the lower index with the 
