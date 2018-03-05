@@ -4,19 +4,19 @@ import numpy as np
 def startScreen(version):
     # total display length
     totallen = 70
-    # make a hashtac line with this length
+    # make a hashtag line with this length
     hashline = '#'*totallen
     # name of the code
     name = 'PSF (PULSAR SPECTRAL FOLDER)'
     # make an array of the version
     version = 'VERSION '+version
-    # length of hashtacs on the left and right
+    # length of hashtags on the left and right
     minlen = 3
-    # make the minimum hashtac string
+    # make the minimum hashtag string
     hashmin = '#'*minlen 
     authors = 'AUTHORS:'   
 
-    # print the hashtac line
+    # print the hashtag line
     hashLine()
     printString(name)
     hashLine()
