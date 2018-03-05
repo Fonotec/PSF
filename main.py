@@ -48,6 +48,7 @@ if pulsar=='None':
 period = pulsar.period
 DM = pulsar.DM
 
+print(period)
 # Time resolution of the telescope
 dt = (512*64)/(70e6)
 
@@ -56,7 +57,7 @@ frequencyarray = np.linspace(0.402,0.433,255)*1e3
 #frequencyarray = np.linspace(0.399,0.44,255)
 
 # load the data
-twodarray = loader('PSR_B0329+54_B.raw')
+twodarray = loader('/net/dataserver2/data/users/nobels/CAMRAS/B0329 54.2016.11.18.1038.5min.dat')
 
 
 # part for folding
@@ -74,7 +75,7 @@ noflag=~flagData(twodarray)
 # be easy to extend on this
 
 # calculate the folded array
-foldedarray = timeFolding(twodarray,nbins,stepsize,noflag)
+foldedarray = timeFolding(twodarray,nbins,period,noflag)
 
 # make a waterfall plot of the result
 #waterfall(foldedarray)
