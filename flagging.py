@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import numpy as np
+from tqdm import tqdm
 
 dt = (64*512)/(70e6)
 def moving_average(a, n=3) :
@@ -12,10 +13,11 @@ def moving_average(a, n=3) :
 def pyramid_average(a,n=5):
     return moving_average(moving_average(a, n//2+1), n//2+1)
 
-def flagData(data, nwindow=100001, signific=5):
+def flagData(data, nwindow=100001, signific=5, progressbar=True):
     time_num_points, freq_num_points = data.shape
     indbad = (data==0)
-    for i in range(freq_num_points):
+    iterator = tqdm(range(freq_num_points)) if progressbar else range(freq_num_points)
+    for i in iterator:
         dset = data[:,i]
         smoothed=pyramid_average(dset, n=nwindow)
         residuals = (dset-smoothed)
