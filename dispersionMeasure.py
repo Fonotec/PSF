@@ -7,7 +7,7 @@ def dedispersion(foldedarray,DM,frequencies,dt=(512*64)/70e6):
     #binshifts = np.round(timedelays/dt)
     binshifts = timedelays/dt
     #Applying the dispersion meassure
-    for i in range(len(foldedarray[0,:])-1):
+    for i in range(len(foldedarray[0,:])):
         currentshift = binshifts[i]
         
         # calculate the index
@@ -17,8 +17,8 @@ def dedispersion(foldedarray,DM,frequencies,dt=(512*64)/70e6):
         # calculate the weight
         higherweigth = currentshift - lowerindex
         lowerweigth = 1- higherweigth
-        # add an interpolation when dedispersionss
-        foldedarray[:,i+1] = lowerweigth*np.roll(foldedarray[:,i+1],lowerindex) + higherweigth*np.roll(foldedarray[:,i+1],higherindex)    
+        # add an interpolation when dedispersions
+        foldedarray[:,i] = lowerweigth*np.roll(foldedarray[:,i],lowerindex) + higherweigth*np.roll(foldedarray[:,i],higherindex)
         #foldedarray[:,i+1] = np.roll(foldedarray[:,i+1],int(currentshift))
 
 

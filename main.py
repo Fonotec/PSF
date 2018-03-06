@@ -103,6 +103,6 @@ maximum, fitres = fitDM(foldedarray,frequencyarray)
 
 print(fitres)
 
-plt.plot(frequencyarray,maximum[1:])
+plt.plot(frequencyarray,maximum)
 plt.plot(frequencyarray,DMfunction(frequencyarray,fitres[0][0],fitres[0][1],fitres[0][2]))
 plt.show()

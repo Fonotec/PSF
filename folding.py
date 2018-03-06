@@ -7,15 +7,13 @@ dt = (512*64)/(70e6)
 
 def timeFolding(data_array,nbins,period,flagged, progressbar=True):
     stepsize = dt*nbins/period
-    # Making sure counting starts at 0
-    data_array[:,0] = data_array[:,0]-np.min(data_array[:,0]) 
 
     # The shape of the data
     time_num_points, freq_num_points = data_array.shape
     
     #Arrays for folding and normalization
-    foldedarray = np.zeros((nbins,256))
-    normalarray = np.zeros((nbins,256))
+    foldedarray = np.zeros((nbins,freq_num_points))
+    normalarray = np.zeros((nbins,freq_num_points))
 
 
     # Timearray in units of bin

@@ -24,7 +24,7 @@ def loader(name):
         data_array = np.fromfile(name,dtype=unsingeddatat)
     except FileNotFoundError:
         print("This file could not be found.")
-        exit(0)
+        exit(1)
     
     # Until now the data is just a 1 times many array, 
     # which is quite useless for our analysis. We want 
@@ -36,4 +36,4 @@ def loader(name):
     # This means the array needs to be reshaped as follows:
 
 
-    return np.reshape(data_array,(int(len(data_array)/256),256))
+    return np.reshape(data_array,(int(len(data_array)/256),256))[:,1:]
