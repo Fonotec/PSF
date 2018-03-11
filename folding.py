@@ -5,7 +5,7 @@ from tqdm import tqdm # A nice progress bar, can be installed using, even on ast
 
 dt = (512*64)/(70e6)
 
-def timeFolding(data_array,nbins,period,flagged, progressbar=True):
+def timeFolding(data_array, nbins, period, flagged, corrected_times=None, progressbar=True):
     stepsize = dt*nbins/period
 
     # The shape of the data
@@ -16,9 +16,14 @@ def timeFolding(data_array,nbins,period,flagged, progressbar=True):
     normalarray = np.zeros((nbins,freq_num_points))
 
 
-    # Timearray in units of bin
-    bindata = np.arange(0,time_num_points*stepsize,stepsize)
+    # Timearray in units of bin, 1 bin = dt seconds, so bindata = time_array/dt
+    if corrected_times is None:
+        bindata = np.arange(time_num_points)*stepsize
+    else:
+        bindata = corrected_times*nbins/period
 
+    print(bindata)
+    print(np.arange(0,time_num_points*stepsize-stepsize/2,stepsize))
     # Modulus bin data array
     # This saves us a for loop.
     bindatamod = np.mod(bindata,nbins)

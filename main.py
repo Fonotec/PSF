@@ -15,6 +15,7 @@ from folding import timeFolding
 from plotTools import waterfall
 from flagging import flagData
 from dispersionMeasure import dedispersion, pulseProfile, fitDM, DMfunction
+from barcen import barcen_times
 
 startScreen('1.1.0')
 
@@ -22,7 +23,7 @@ startScreen('1.1.0')
 parser = argparse.ArgumentParser(description='Pulsar folding!')
 parser.add_argument('-d', '--datafile', default='/net/dataserver2/data/users/nobels/CAMRAS/B0329 54.2016.11.18.1038.5min.dat', help='The location of the *.raw or *.dat data file.')
 parser.add_argument('--pulsarname', default='B0329+54', help='The name of the pulsar, as noted in the database, \'pulsardata.txt\'.')
-parser.add_argument('-b','--nbins', default=200, help='The number of phase bins to fold with. Higher means higher time resolution, but noisier folds.')
+parser.add_argument('-b','--nbins', default=500, help='The number of phase bins to fold with. Higher means higher time resolution, but noisier folds.')
 parser.add_argument('-p','--pulsarcat', default='./pulsarcat.csv', help='The csv file containing pulsar data')
 args = parser.parse_args()
 
@@ -54,8 +55,9 @@ nbins = int(round(period/dt))
 # noflag = flagging(twodarray)
 
 flag=flagData(twodarray)
-# for the moment lets make everything not flagged, if this function is changed it will 
-# be easy to extend on this
+
+# The corrected barycentered times:
+bar_times = barcen_times(pulsar, len(twodarray))
 
 # calculate the folded array
 foldedarray = timeFolding(twodarray, args.nbins, period, flag)
