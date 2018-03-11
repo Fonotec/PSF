@@ -1,82 +1,46 @@
 #!/usr/bin/env python
 import numpy as np
+from astropy.time import Time
+from astropy import units as u
+
+# Loading the data
+def load_pulsar_data(pulsar_name, pulsarcat_file='pulsarcat.csv'):
+    # read the data of the pulsar database
+    pulsardata = np.genfromtxt(pulsarcat_file, delimiter=",", dtype=None, encoding='utf-8', names=True, missing_values="*")
+    # Find the index of the correct pulsar
+    matches = np.where((pulsardata['NAME'] == pulsar_name) | (pulsardata['PSRJ'] == pulsar_name))
+
+    # check if we actually found the pulsar in the data base
+    if (len(matches) == 0):
+        print('Your defined pulsar was not found in the database')
+        print('Program exits with an ERROR!!')
+        exit(1)
+
+    pulsardata_row = pulsardata[matches[0]]
+    return pulsardata_row
 
 # class for pulsars
-
 class Pulsar:
     # constructor of the pulsar
-    def __init__(self,pulsardata):
-        # read the array
-        self.ID = pulsardata[0]
-        self.name = pulsardata[1].decode("utf-8")
-        self.RAJD = pulsardata[2]
-        self.DECJD = pulsardata[3]
-        self.period = pulsardata[4]
-        self.periodder = pulsardata[5]
-        self.DM = pulsardata[6]
-        self.RM = pulsardata[7]
-        self.W50 = pulsardata[8]
-        self.W10 = pulsardata[9]
-        self.S400 = pulsardata[10]
-        self.S1400 = pulsardata[11]
-        self.distance = pulsardata[12]
+    def __init__(self, pulsardata, tobs=Time.now()):
+        # read the array, and make every object accessible like pulsar.period
+        for i in pulsardata.dtype.names:
+            setattr(self, i, pulsardata[i][0])
 
-    # basically get functions of the class
-    @property
-    def getID(self):
-        return self.ID
+        self.distance = pulsardata['DIST']
+        self.period = self.currentPeriod(Time.now())
 
-    @property
-    def getName(self):
-        return self.name
-
-    @property
-    def getCoordinates(self):
-        return self.RAJD, self.DECJD
+    
+    # The period that the pulsar has now, considering the first period derivative
+    def currentPeriod(self, tobs=Time.now()):
+        timediff = (tobs - Time(self.PEPOCH, format='mjd')).to(u.s).value
+        return self.P0 + self.P1 * timediff
 
     @property
     def getPeriod(self):
         return self.period
 
-    @property
-    def getPeriodDer(self):
-        return self.periodder
-    
-    @property
-    def getDM(self):
-        return self.DM
-
-    @property
-    def getRM(self):
-        return self.RM
-
-    @property
-    def getW50(self):
-        return self.W50
-
-    @property
-    def getW10(self):
-        return self.W10
-
-    @property    
-    def getS400(self):
-        return self.S400
-
-    @property    
-    def getS1400(self):
-        return self.S1400
-
-    @property    
-    def getPeriodDM(self):
-        return self.period, self.DM
-
-    @property
-    def getDistance(self):
-        return self.distance
-
     # calculation functions
     @property
     def getPulseFlux(self):
         return self.S400/self.W50
-
-

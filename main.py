@@ -9,7 +9,7 @@ import scipy as sc
 import scipy.optimize as sco
 import argparse
 from startscreen import startScreen
-from pulsarsObjects import Pulsar
+from pulsarsObjects import Pulsar, load_pulsar_data
 from loadData import loader
 from folding import timeFolding
 from plotTools import waterfall
@@ -23,41 +23,19 @@ parser = argparse.ArgumentParser(description='Pulsar folding!')
 parser.add_argument('-d', '--datafile', default='/net/dataserver2/data/users/nobels/CAMRAS/B0329 54.2016.11.18.1038.5min.dat', help='The location of the *.raw or *.dat data file.')
 parser.add_argument('--pulsarname', default='B0329+54', help='The name of the pulsar, as noted in the database, \'pulsardata.txt\'.')
 parser.add_argument('-b','--nbins', default=200, help='The number of phase bins to fold with. Higher means higher time resolution, but noisier folds.')
+parser.add_argument('-p','--pulsarcat', default='./pulsarcat.csv', help='The csv file containing pulsar data')
 args = parser.parse_args()
 
+# Create an object containing all useful pulsar properties
+pulsardata = load_pulsar_data(args.pulsarname, args.pulsarcat)
 
-
-# read the data of the pulsar database
-pulsardata = np.genfromtxt('pulsardata.txt', dtype=None)
-
-# construct a list to add pulsar object to it
-pulsarlist = []
-
-# construct all the pulsar objects
-for i in range(0,len(pulsardata)):
-    currentpulsar = pulsardata[i]
-    pulsarlist.append(Pulsar(currentpulsar))
-
-# Specify your pulsar
-pulsarname = args.pulsarname
-
-pulsar = None
-# search for the correct pulsar
-for i in range(0,len(pulsarlist)):
-    if pulsarlist[i].getName == pulsarname:
-        pulsar = pulsarlist[i]
-
-# check if we actually found the pulsar in the data base
-if pulsar is None:
-    print('Your defined pulsar is not found in the database')
-    print('Program exits with an ERROR!!')
-    exit(1)
+# Todo: here, the observation date/time needs to be inputted so that the proper period can be calculated.
+pulsar = Pulsar(pulsardata)
 
 # read the literature value of the period and the dispersion measure
 period = pulsar.period
 DM = pulsar.DM
 
-print(period)
 # Time resolution of the telescope
 dt = (512*64)/(70e6)
 
@@ -68,13 +46,9 @@ frequencyarray = np.linspace(0.402,0.433,255)*1e3
 # load the data
 twodarray = loader(args.datafile)
 
-
 # part for folding
 # Number of bins per period
 nbins = int(round(period/dt))
-
-# Stepsize in units of bin
-stepsize = dt*nbins/period
 
 # this part should be RFI flagging something like:
 # noflag = flagging(twodarray)
