@@ -14,16 +14,14 @@ class Interface:
         
         self.Menu = MenuFrame(master)
         self.Menu.grid(row=1, column=0, sticky='nw')
-        self.Menu.build()
         
         self.Plots = PlotFrame(master)
         self.Plots.grid(row=1, sticky='e')
-        
-        self.OptionsA = OptionsFrame(master)
-        self.OptionsA.grid(row=1, sticky='sw')
-        
+                
         self.Info = FillerFrame(master)
         self.Info.grid(row=2)
+       
+        
 class HeaderFrame(tk.Frame):
     
     def __init__(self, master):
@@ -51,43 +49,131 @@ class MenuFrame(tk.Frame):
     
     def __init__(self, master):
         tk.Frame.__init__(self, master)
-        self.configure(bd=0, width=512, height=40, bg="#FF0000")
+        self.configure(bd=0, width=512, height=720, bg="#FF0000")
         self.grid_propagate(0)
 
-        self.MenuA = tk.Button(self, text='STANDARD', command=self.A_button, width=14, padx=12, pady=10)
-        self.MenuB = tk.Button(self, text='EVERYTHING EVER', command=self.B_button, width=14, padx=12, pady=10)
-        self.MenuC = tk.Button(self, text='LESS OPTIONS', command=self.C_button, width=14, padx=12, pady=10)
-        self.MenuD = tk.Button(self, text='FRANS', command=self.D_button, width=14, padx=12, pady=10)
+        self.MenuA = MenuAFrame(master)
+        self.MenuB = MenuBFrame(master)
+        self.MenuC = MenuCFrame(master)
+        self.MenuD = MenuDFrame(master)
         
-    def build(self):
-        self.MenuA.grid(row=0, column=0)
-        self.MenuB.grid(row=0, column=1)
-        self.MenuC.grid(row=0, column=2)
-        self.MenuD.grid(row=0, column=3)
+        self.MenuAButton = tk.Button(self, text='STANDARD', command=self.A_button, width=14, padx=12, pady=10)
+        self.MenuBButton = tk.Button(self, text='EVERYTHING EVER', command=self.B_button, width=14, padx=12, pady=10)
+        self.MenuCButton = tk.Button(self, text='LESS OPTIONS', command=self.C_button, width=14, padx=12, pady=10)
+        self.MenuDButton = tk.Button(self, text='FRANS', command=self.D_button, width=14, padx=12, pady=10)
+        
+        self.ActiveFrame = self.MenuB
+        self.ActiveButton = self.MenuAButton
+        self.ActiveButton.config(relief="sunken")
+        
+        self.build_Buttons() 
+
+        self.ActiveButton.invoke()
+        
+    def build_Buttons(self):
+        self.MenuAButton.grid(row=0, column=0)
+        self.MenuBButton.grid(row=0, column=1)
+        self.MenuCButton.grid(row=0, column=2)
+        self.MenuDButton.grid(row=0, column=3)
         
     def A_button(self):
-        RestButtons = [self.MenuB, self.MenuC, self.MenuD]
-        self.MenuA.config(relief="sunken")
-        for i in RestButtons:
-            i.config(relief="raised")
-
+        if self.ActiveFrame == self.MenuA:
+            pass
+        else:
+            self.ActiveButton.config(relief="raised")
+            self.ActiveFrame.grid_forget()
+        
+            self.ActiveFrame = self.MenuA
+            self.ActiveButton = self.MenuAButton
+        
+            self.ActiveButton.config(relief="sunken")
+            self.ActiveFrame.grid(row=1, column=0, sticky='sw')   
+            
+            self.ActiveFrame.build()
+        
     def B_button(self):
-        RestButtons = [self.MenuA, self.MenuC, self.MenuD]
-        self.MenuB.config(relief="sunken")
-        for i in RestButtons:
-            i.config(relief="raised")
-
+        self.ActiveButton.config(relief="raised")
+        self.ActiveFrame.grid_forget()
+        
+        self.ActiveFrame = self.MenuB
+        self.ActiveButton = self.MenuBButton
+        
+        self.ActiveButton.config(relief="sunken")
+        self.ActiveFrame.grid(row=1, column=0, sticky='sw')    
+        
+        self.ActiveFrame.build()
+        
     def C_button(self):
-        RestButtons = [self.MenuA, self.MenuB, self.MenuD]
-        self.MenuC.config(relief="sunken")
-        for i in RestButtons:
-            i.config(relief="raised")
+        self.ActiveButton.config(relief="raised")
+        self.ActiveFrame.grid_forget()
+        
+        self.ActiveFrame = self.MenuC
+        self.ActiveButton = self.MenuCButton
+        
+        self.ActiveButton.config(relief="sunken")
+        self.ActiveFrame.grid(row=1, column=0, sticky='sw')  
+        
+        self.ActiveFrame.build()
             
     def D_button(self):
-        RestButtons = [self.MenuA, self.MenuB, self.MenuC]
-        self.MenuD.config(relief="sunken")
-        for i in RestButtons:
-            i.config(relief="raised")            
+        self.ActiveButton.config(relief="raised")
+        self.ActiveFrame.grid_forget()
+        
+        self.ActiveFrame = self.MenuD
+        self.ActiveButton = self.MenuDButton
+        
+        self.ActiveButton.config(relief="sunken")
+        self.ActiveFrame.grid(row=1, column=0, sticky='sw')        
+        
+        self.ActiveFrame.build()
+            
+class MenuAFrame(tk.Frame):
+    
+    def __init__(self, master):
+        tk.Frame.__init__(self, master)
+        self.configure(bd=0, width=512, height=680)
+        self.grid_propagate(0)
+        
+        self.FilenameLabel = tk.Label(self, text="FileName")
+        
+    def build(self):
+        self.FilenameLabel.grid(row=1, column=0)
+class MenuBFrame(tk.Frame):
+    
+    def __init__(self, master):
+        tk.Frame.__init__(self, master)
+        self.configure(bd=0, width=512, height=680, bg="#00FF00")
+        self.grid_propagate(0)
+        
+        self.FilenameLabel = tk.Label(self, text="FileName")
+        
+    def build(self):
+        self.FilenameLabel.grid(row=1, column=0)  
+        
+class MenuCFrame(tk.Frame):
+    
+    def __init__(self, master):
+        tk.Frame.__init__(self, master)
+        self.configure(bd=0, width=512, height=680, bg="#0000FF")
+        self.grid_propagate(0)
+        
+        self.FilenameLabel = tk.Label(self, text="FileName")
+        
+    def build(self):
+        self.FilenameLabel.grid(row=1, column=0)
+        
+class MenuDFrame(tk.Frame):
+    
+    def __init__(self, master):
+        tk.Frame.__init__(self, master)
+        self.configure(bd=0, width=512, height=680, bg="#0F0F0F")
+        self.grid_propagate(0) 
+        
+        self.FilenameLabel = tk.Label(self, text="FileName")
+        
+    def build(self):
+        self.FilenameLabel.grid(row=1, column=0)
+        
 class PlotFrame(tk.Frame):
     
     def __init__(self, master):
@@ -95,12 +181,6 @@ class PlotFrame(tk.Frame):
         self.configure(bd=0, width=512, height=720, bg="#000FF0")
         self.grid_propagate(0)
 
-class OptionsFrame(tk.Frame):
-    
-    def __init__(self, master):
-        tk.Frame.__init__(self, master)
-        self.configure(bd=0, width=512, height=680, bg="#0F0F0F")
-        self.grid_propagate(0)
 
 class FillerFrame(tk.Frame):
     
@@ -108,6 +188,7 @@ class FillerFrame(tk.Frame):
         tk.Frame.__init__(self, master)
         self.configure(bd=0, width=1024, height=26, bg="#00FFFF")
         self.grid_propagate(0)
+
         
 if __name__ == "__main__":
     root = tk.Tk()
