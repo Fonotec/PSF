@@ -13,6 +13,7 @@
 #include <math.h>
 #include <fcntl.h>
 #include <sys/stat.h>
+#include <cstdlib>
 
 /* Define some short notations */
 #define CLK (140000000. / 2)
@@ -40,7 +41,7 @@ int main(int argc, char * argv[])
     /* If statement that checks if either one or two arguments 
      * are given to the function.
      */
-    if (argc != 2 && arc != 3) {
+    if (argc != 2 && argc != 3) {
         fprintf(stderr, "%s requires one or two argument:\n", argv[0]);
         fprintf(stderr, "-%s <filename>\n", argv[0]);
         fprintf(stderr, "-%s <observation time> <filename>\n", argv[0]);
@@ -60,7 +61,7 @@ int main(int argc, char * argv[])
             fprintf(stderr, "Can't open %s\n", argv[2]);
             exit(10);
         }
-        total_time = argv[1];
+        total_time = atoi(argv[1]);
     }
     /* The following statement is executed if the world goes down.
      */ 
