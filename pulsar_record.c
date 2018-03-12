@@ -14,6 +14,7 @@
 #include <fcntl.h>
 #include <sys/stat.h>
 
+/* Define some short notations */
 #define CLK (140000000. / 2)
 #define SOCKSIZE (8388608*8)
 #define MTU 8900
@@ -24,6 +25,8 @@ int fd,fdw;
 
 int main(int argc, char * argv[])
 {
+    /* Initialize some variables
+     */
     int i,j = 0;
     struct sockaddr_in server_addr, client_addr;
     struct hostent *hp;
@@ -32,26 +35,58 @@ int main(int argc, char * argv[])
     int optval, optlen;
     ssize_t ps;
 
-    if(argc != 2)
-    {
-    	fprintf(stderr, "%s requires one argument: output file name\n", argv[0]);
-	exit(10);
+    int total_time;
+
+    /* If statement that checks if either one or two arguments 
+     * are given to the function.
+     */
+    if (argc != 2 && arc != 3) {
+        fprintf(stderr, "%s requires one or two argument:\n", argv[0]);
+        fprintf(stderr, "-%s <filename>\n", argv[0]);
+        fprintf(stderr, "-%s <observation time> <filename>\n", argv[0]);
+    }
+    /* The following statement is if only 1 extra argument is given
+     */
+    else if (argc == 2) {
+        if ((fdw = open(argv[1],  O_WRONLY| O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR)) < 0) {
+            fprintf(stderr, "Can't open %s\n", argv[1]);
+            exit(10);
+        }
+    }
+    /* The following statements are exectuted if 2 extra arguments are given
+     */
+    else if (argc == 3) {
+        if ((fdw = open(argv[2],  O_WRONLY| O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR)) < 0) {
+            fprintf(stderr, "Can't open %s\n", argv[2]);
+            exit(10);
+        }
+        total_time = argv[1];
+    }
+    /* The following statement is executed if the world goes down.
+     */ 
+    else {
+        fprintf(stderr,"Weird stuff is happening\n");
     }
 
-    if ((fdw = open(argv[1],  O_WRONLY| O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR)) < 0) {
-        fprintf(stderr, "Can't open %s\n", argv[1]);
-        exit(10);
-    }
+
+    /* Statement that checks if the socket is present
+     */
     if ((fd = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) < 0) {
-	fprintf(stderr, "no socket\n");
-	exit(10);
+	    fprintf(stderr, "no socket\n");
+	    exit(10);
     }
+    // specify socket size etc.
     optval = SOCKSIZE;
     optlen = sizeof(optval);
+
+    /* Set some socket options
+     */
     if(setsockopt(fd, SOL_SOCKET, SO_RCVBUF, &optval, optlen)<0) {
         fprintf(stderr, "setsockopt failed\n");
         exit(10);
     }
+    /* Get some socket options
+     */
     if(getsockopt(fd, SOL_SOCKET, SO_RCVBUF, &optval, &optlen)<0) {
         fprintf(stderr, "getsockopt failed\n");
         exit(10);
