@@ -6,9 +6,9 @@ from astropy import units as u
 # Loading the data
 def load_pulsar_data(pulsar_name, pulsarcat_file='pulsarcat.csv'):
     # read the data of the pulsar database
-    pulsardata = np.genfromtxt(pulsarcat_file, delimiter=",", dtype=None, encoding='utf-8', names=True, missing_values="*")
+    pulsardata = np.genfromtxt(pulsarcat_file, delimiter=",", dtype=None, names=True, missing_values="*")
     # Find the index of the correct pulsar
-    matches = np.where((pulsardata['NAME'] == pulsar_name) | (pulsardata['PSRJ'] == pulsar_name))
+    matches = np.where((pulsardata['NAME'].astype(str) == pulsar_name) | (pulsardata['PSRJ'].astype(str) == pulsar_name))
 
     # check if we actually found the pulsar in the data base
     if (len(matches) == 0):
