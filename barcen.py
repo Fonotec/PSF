@@ -19,7 +19,7 @@ def barcen_times(pulsar, obs_duration, obsstart=Time.now()):
     corrected time array of length obs_duration
     """
     obsstart = Time(obsstart)
-    time_array = np.arange(obs_duration) * dt
+    time_array = dt * np.arange(obs_duration)
     pulsar_loc = SkyCoord(ra=pulsar.RAJD*u.deg, dec=pulsar.DECJD*u.deg)
     corr = lambda time: time.light_travel_time(pulsar_loc, location=telescope_location).to(u.s).value
     corrafterobs = lambda t: corr(obsstart + t*u.s) - corr(obsstart)

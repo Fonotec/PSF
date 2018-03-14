@@ -5,7 +5,10 @@ from tqdm import tqdm # A nice progress bar, can be installed using, even on ast
 
 dt = (512*64)/(70e6)
 
-def timeFolding(data_array, nbins, period, flagged, corrected_times=None, progressbar=True):
+def timeFolding(data_array, nbins, period, flagged = None, corrected_times=None, progressbar=True):
+    if flagged is None:
+        flagged = data_array == 0 
+
     stepsize = dt*nbins/period
 
     # The shape of the data

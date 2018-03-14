@@ -28,7 +28,7 @@ class Pulsar:
             setattr(self, i, pulsardata[i][0])
 
         self.distance = pulsardata['DIST']
-        self.period = self.currentPeriod(Time.now())
+        self.period = self.currentPeriod(tobs)
 
     
     # The period that the pulsar has now, considering the first period derivative
