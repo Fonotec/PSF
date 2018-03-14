@@ -48,7 +48,7 @@ frequencyarray = obs.freq
 flag=flagData(twodarray)
 
 # calculate the folded array
-foldedarray = timeFolding(twodarray, args.nbins, period, flagged = flag)
+foldedarray = timeFolding(twodarray, args.nbins, period, flagged = flag, corrected_times=obs.times)
 
 # make a waterfall plot of the result
 #waterfall(foldedarray)
