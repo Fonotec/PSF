@@ -14,7 +14,7 @@ from loadData import loader
 from folding import timeFolding
 from plotTools import waterfall
 from flagging import flagData
-from dispersionMeasure import dedispersion, pulseProfile, fitDM, DMfunction
+from dispersionMeasure import dedispersion
 from barcen import barcen_times
 from observation import Observation
 
@@ -46,6 +46,7 @@ frequencyarray = obs.freq
 # noflag = flagging(twodarray)
 
 flag=flagData(twodarray)
+obs.flag = flag
 
 # calculate the folded array
 foldedarray = timeFolding(twodarray, args.nbins, period, flagged = flag, corrected_times=obs.times)
@@ -54,19 +55,8 @@ foldedarray = timeFolding(twodarray, args.nbins, period, flagged = flag, correct
 #waterfall(foldedarray)
 
 # do the dedispersion
-
-waterfall(dedispersion(foldedarray,DM,frequencyarray))
+pulse_profile = dedispersion(foldedarray, obs, obs.pulsar.period, obs.pulsar.DM)
 
 # plot the final pulse profile
-plt.plot(pulseProfile(foldedarray,DM,frequencyarray))
-plt.show()
-
-#fitDM(foldedarray,frequencyarray)
-
-maximum, fitres = fitDM(foldedarray,frequencyarray)
-
-print(fitres)
-
-plt.plot(frequencyarray,maximum)
-plt.plot(frequencyarray,DMfunction(frequencyarray,fitres[0][0],fitres[0][1],fitres[0][2]))
+plt.plot(pulse_profile)
 plt.show()

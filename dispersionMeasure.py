@@ -1,41 +1,10 @@
 #!/usr/bin/env python
 import numpy as np
-import scipy.optimize as sco
+from folding import timeFolding
+from single_folding import fold_per_fbin
 
-def dedispersion(foldedarray,DM,frequencies,dt=(512*64)/70e6):
-    timedelays = 4.148e3*DM*(frequencies[0]**(-2)-frequencies**(-2))
-    #binshifts = np.round(timedelays/dt)
-    binshifts = timedelays/dt
-    #Applying the dispersion meassure
-    for i in range(len(foldedarray[0,:])):
-        currentshift = binshifts[i]
-        
-        # calculate the index
-        lowerindex = int(np.floor(currentshift))
-        higherindex = lowerindex+1
-
-        # calculate the weight
-        higherweigth = currentshift - lowerindex
-        lowerweigth = 1- higherweigth
-        # add an interpolation when dedispersions
-        foldedarray[:,i] = lowerweigth*np.roll(foldedarray[:,i],lowerindex) + higherweigth*np.roll(foldedarray[:,i],higherindex)
-        #foldedarray[:,i+1] = np.roll(foldedarray[:,i+1],int(currentshift))
-
-
-    return foldedarray
-
-def pulseProfile(foldedarray,DM,frequencies):
-    dedispersed = dedispersion(foldedarray,DM,frequencies)
-    return np.sum(dedispersed,axis=1)
-
-def fitDM(foldedarray,frequencies,dt=(512*64)/70e6):
-
-    maxchannel = np.argmax(foldedarray,axis=0)
-
-    fitresults = sco.curve_fit(DMfunction,frequencies[10:100],maxchannel[10:100],p0=[10,1000,frequencies[0]])
-
-
-    return maxchannel,fitresults
-
-def DMfunction(freq,DM,A,freqmin):
-    return 4.15e-3*DM*(freqmin**(-2)-freq**(-2))+A
+def dedispersion(folded, obs, period, DM, time_fold_bins = 500, freq_fold_bins=500):
+    folded_times = np.arange(time_fold_bins) * period/time_fold_bins
+    dedispersed_times = folded_times[:, np.newaxis] - 4.148e3*DM*obs.freq**(-2)
+    folded_dedispersed = fold_per_fbin(folded.flatten(), dedispersed_times.flatten(), period, freq_fold_bins, folded.flatten()==0)
+    return folded_dedispersed
