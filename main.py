@@ -29,6 +29,7 @@ parser.add_argument('--skiprfi', action='store_true', help='Use this to skip tim
 args = parser.parse_args()
 
 # Create an object containing all useful pulsar properties
+print("Loading data")
 obs = Observation(args.datafile)
 pulsar = obs.pulsar
 twodarray = obs.data
@@ -46,15 +47,18 @@ frequencyarray = obs.freq
 # this part should be RFI flagging something like:
 # noflag = flagging(twodarray)
 
+print("Flagging bad data")
 flag = obs.data == 0 if args.skiprfi else flagData(twodarray)
 obs.flag = flag
 
+print("Folding")
 # calculate the folded array
 foldedarray = timeFolding(twodarray, args.nbins, period, flagged = flag, corrected_times=obs.times)
 
 # make a waterfall plot of the result
 waterfall(foldedarray)
 
+print("Dedispersing")
 # do the dedispersion
 pulse_profile = dedispersion(foldedarray, obs, obs.pulsar.period, obs.pulsar.DM)
 
