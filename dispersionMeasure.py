@@ -3,7 +3,7 @@ import numpy as np
 import scipy.optimize as sco
 
 def dedispersion(foldedarray,DM,frequencies,dt=(512*64)/70e6):
-    timedelays = 4.15e-3*DM*(frequencies[0]**(-2)-frequencies**(-2))
+    timedelays = 4.148e3*DM*(frequencies[0]**(-2)-frequencies**(-2))
     #binshifts = np.round(timedelays/dt)
     binshifts = timedelays/dt
     #Applying the dispersion meassure
