@@ -52,7 +52,7 @@ obs.flag = flag
 foldedarray = timeFolding(twodarray, args.nbins, period, flagged = flag, corrected_times=obs.times)
 
 # make a waterfall plot of the result
-#waterfall(foldedarray)
+waterfall(foldedarray)
 
 # do the dedispersion
 pulse_profile = dedispersion(foldedarray, obs, obs.pulsar.period, obs.pulsar.DM)
