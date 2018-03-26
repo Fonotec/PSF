@@ -61,7 +61,7 @@ waterfall(foldedarray)
 
 print("Dedispersing")
 # do the dedispersion
-pulse_profile = dedispersion(foldedarray, obs, period, obs.pulsar.DM, freq_fold_bins=args.nbinsdedisp, time_fold_bins=args.nbins)
+pulse_profile = dedispersion(foldedarray, obs, period, obs.pulsar.DM, freq_fold_bins=args.nbinsdedisp)
 
 # plot the final pulse profile
 plt.plot(pulse_profile)

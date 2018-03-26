@@ -22,13 +22,18 @@ def load_pulsar_data(pulsar_name, pulsarcat_file='pulsarcat.csv'):
 # class for pulsars
 class Pulsar:
     # constructor of the pulsar
-    def __init__(self, pulsardata, tobs=Time.now()):
+    def __init__(self, pulsardata, tobs=Time.now(), chisqperiod=None):
         # read the array, and make every object accessible like pulsar.period
         for i in pulsardata.dtype.names:
             setattr(self, i, pulsardata[i][0])
 
         self.distance = pulsardata['DIST']
-        self.period = self.currentPeriod(tobs)
+        self.lit_period = self.currentPeriod(tobs)
+        if chisqperiod is None:
+            self.period = self.lit_period
+        else:
+            self.period = chisqperiod
+
 
     
     # The period that the pulsar has now, considering the first period derivative

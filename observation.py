@@ -15,6 +15,7 @@ class Observation:
         self.obs_start_isot = header['DATE-OBS']
         self.mix_freq = header['FREQMIX']
 
+
         self.obs_start = Time(self.obs_start_isot, format='isot')
         dt = 64*512/(70e6)
         self.obs_dur = len(self.data) * dt
@@ -22,12 +23,16 @@ class Observation:
         self.obs_times = np.arange(len(self.data)) * dt
         self.obs_middle = self.obs_dur*u.s + self.obs_start
 
+        if len(hdulist)>2:
+            self.chisqperiod = hdulist[2].header['bestp']
+        else:
+            self.chisqperiod = None
+
         psrdata = load_pulsar_data(self.psr_name)
-        self.pulsar = Pulsar(psrdata, tobs=self.obs_start)
+        self.pulsar = Pulsar(psrdata, tobs=self.obs_start, chisqperiod=self.chisqperiod)
 
         self.times = barcen_times(self.pulsar, len(self.data), obsstart=self.obs_start)
         self.calc_freqs()
-        
 
     def calc_freqs(self):
         timevoltage = 1/(70e6) # (s), the time of each voltage measurement
