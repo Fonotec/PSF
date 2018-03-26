@@ -2,10 +2,15 @@
 import numpy as np
 import math as ma
 from tqdm import tqdm # A nice progress bar, can be installed using, even on astro computers with: pip install --user tqdm
+from numba import njit
 
 dt = (512*64)/(70e6)
 
-def timeFolding(data_array,nbins,period,flagged, progressbar=True):
+@njit
+def timeFolding(data_array, nbins, period, flagged = None, corrected_times=None, progressbar=True):
+    if flagged is None:
+        flagged = data_array == 0 
+
     stepsize = dt*nbins/period
 
     # The shape of the data
@@ -16,8 +21,11 @@ def timeFolding(data_array,nbins,period,flagged, progressbar=True):
     normalarray = np.zeros((nbins,freq_num_points))
 
 
-    # Timearray in units of bin
-    bindata = np.arange(0,time_num_points*stepsize,stepsize)
+    # Timearray in units of bin, 1 bin = dt seconds, so bindata = time_array/dt
+    if corrected_times is None:
+        bindata = np.arange(time_num_points)*stepsize
+    else:
+        bindata = corrected_times*nbins/period
 
     # Modulus bin data array
     # This saves us a for loop.
@@ -29,7 +37,8 @@ def timeFolding(data_array,nbins,period,flagged, progressbar=True):
 
     # Start the for loop and loop through
     # all the time steps
-    iterator = tqdm(range(time_num_points)) if progressbar else range(time_num_points)
+    #iterator = tqdm(range(time_num_points)) if progressbar else range(time_num_points)
+    iterator = range(time_num_points)
     for i in iterator:
         # Calculate the weight of the lower index and the 
         # higher index. In general when we have the index 
@@ -38,7 +47,8 @@ def timeFolding(data_array,nbins,period,flagged, progressbar=True):
         # we are interpolating linearly between the higher and 
         # the lower value, and this will increase the accuracy
         # of our folding algorithm.
-        lowernorm = np.repeat(ma.ceil(bindatamod[i])-bindatamod[i],freq_num_points)
+        lowernorm_val = [ma.ceil(bindatamod[i])-bindatamod[i]]
+        lowernorm = np.array(lowernorm_val * freq_num_points)
         # because the total norm is conserved we can simply 
         # subtract the lower norm from 1. 
         highernorm = 1-lowernorm
@@ -79,6 +89,6 @@ def timeFolding(data_array,nbins,period,flagged, progressbar=True):
     protonormalisedfoldedarray = foldedarray/normalarray
 
     # normalize the data by dividing by the sum
-    normalisedfoldedarray = np.divide( protonormalisedfoldedarray, np.sum(protonormalisedfoldedarray,axis=0) )    
+    normalisedfoldedarray = protonormalisedfoldedarray / protonormalisedfoldedarray.sum(axis=0)
     
     return normalisedfoldedarray
