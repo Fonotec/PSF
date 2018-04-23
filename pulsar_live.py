@@ -3,26 +3,30 @@ import socket
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib
-matplotlib.use('GTKAgg')
+matplotlib.use('TKAgg')
+
+from observation import Observation
+from time import sleep
+obs = Observation("data/obs-10-04-2018/B0329+54_10-04-2018-withP.fits.gz")
 
 DM = 26.8
 
 # define data type unsigned int
-unsignint = np.dtype(np.uint32)
+## unsignint = np.dtype(np.uint32)
 
 # construct the socekt
-s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+## s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
 # get socket info
-sinfo = socket.getaddrinfo('0.0.0.0',22102)
+## sinfo = socket.getaddrinfo('0.0.0.0',22102)
 
 # bind with the backend
-s.bind(('0.0.0.0',22102))
+## s.bind(('0.0.0.0',22102))
 #s.connect(('10.1.2.3',22102))
 data = np.zeros(512,dtype=int)
 
 # receive one package
-a = s.recv(2048)
+## a = s.recv(2048)
 
 # define a counter 
 counter = 0
@@ -42,21 +46,6 @@ background = fig.canvas.copy_from_bbox(ax.bbox)
 plotarray = np.ones(1000)
 xpoints = np.arange(len(plotarray))
 points = ax.plot(xpoints,plotarray)[0]
-
-
-
-timevoltage = 1/(70e6) # (s), the time of each voltage measurement
-timefft = 512*timevoltage # (s), the time of each fft block: of each 512 voltage measurements an fft is taken
-dt = timefft * 64 # (s), to reduce the data rate, the sum of 64 ffts is taken
-freqstep = (1/timefft)/1e6 # (MHz), the bandwidth of each frequency bin
-
-midfreq = 405
-maxfreq = (midfreq+21.4) # (MHz)
-minfreq = maxfreq-35 # (MHz)
-
-freqs_edges = np.linspace(minfreq, maxfreq, 257) # Frequency bin edges
-freqs = (freqs_edges[1:]+freqs_edges[:-1])/2
-#print(freqs)
 
 timevoltage = 1/(70e6) # (s), the time of each voltage measurement
 timefft = 512*timevoltage # (s), the time of each fft block: of each 512 voltage measurements an fft is taken
@@ -84,30 +73,33 @@ xpoints = np.arange(len(plotarray))
 
 newdatapoint = 0
 
-normdata = np.zeros((100,256))
-for j in range(0,100):
+normdata = np.zeros((20000,255)) ## 256->255
+for j in range(0,20000):
     # get the package of the current time
-    a = s.recv(2048)
+    #a = s.recv(2048)
     # save the data in the array
-    for i in range(1,512):
-        data[i-1] = int.from_bytes(a[4*(i-1):4*i],byteorder='big')
+    #for i in range(1,512):
+        #data[i-1] = int.from_bytes(a[4*(i-1):4*i],byteorder='big')
     #print(len(normdata[j]),len(data[256:]))
-    normdata[j] = data[256:]
-    
-norm = np.sum(normdata, axis = 0)/100
+    normdata[j] = obs.data[j]
+
+norm = np.sum(normdata, axis = 0)/20000
 print(norm)
 
 
 # construct the most ugly while loop construction
+t = 0
 while True:
     # get the package of the current time
-    a = s.recv(2048)
+    ## a = s.recv(2048)
     
     # save the data in the array
-    for i in range(1,512):
-        data[i-1] = int.from_bytes(a[4*(i-1):4*i],byteorder='big')
+    ## for i in range(1,512):
+        ## data[i-1] = int.from_bytes(a[4*(i-1):4*i],byteorder='big')
 
-    localdata = data[256:]
+    ## localdata = data[256:]
+    localdata = obs.data[t]
+    t += 1
 
     for i in range(0,len(shift)-1):
         dmdata[(counter+binshifts[i])%maxshift,i] = localdata[i]/norm[i]
