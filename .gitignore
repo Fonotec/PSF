@@ -6,3 +6,7 @@
 __pycache__/
 *.py[cod]
 *$py.class
+
+# Data files
+*.dat
+*.fits
