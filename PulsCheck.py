@@ -24,7 +24,7 @@ startScreen('1.1.0')
 parser = argparse.ArgumentParser(description='Pulsar folding!')
 parser.add_argument('-d', '--datafile', default='/net/dataserver2/data/users/nobels/CAMRAS/obs-10-04-2018/B0329+54_10-04-2018.fits', help='The location of the *.fits file.')
 parser.add_argument('-b','--nbins', default=500, type=int, help='The number of phase bins to fold with. Higher means higher time resolution, but noisier folds.')
-parser.add_argument('-p','--pulsarcat', default='./pulsarcat.csv', help='The csv file containing pulsar data')
+parser.add_argument('-p','--pulsarcat', default='./small-data-files/pulsarcat.csv', help='The csv file containing pulsar data')
 args = parser.parse_args()
 
 DMplay = True

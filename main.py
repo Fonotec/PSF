@@ -25,7 +25,7 @@ parser = argparse.ArgumentParser(description='Pulsar folding!')
 parser.add_argument('-d', '--datafile', default='/net/dataserver2/data/users/nobels/CAMRAS/obs-10-04-2018/B0329+54_10-04-2018.fits', help='The location of the *.fits file.')
 parser.add_argument('--nbins', default=500, type=int, help='The number of phase bins to fold with. Higher means higher time resolution, but noisier waterfalls.')
 parser.add_argument('--nbinsdedisp', default=500, type=int, help='The number bins to show the dedispersed profile with. Higher means higher time resolution, but noisier folds.')
-parser.add_argument('-p','--pulsarcat', default='./pulsarcat.csv', help='The csv file containing pulsar data')
+parser.add_argument('-p','--pulsarcat', default='./small-data-files/pulsarcat.csv', help='The csv file containing pulsar data')
 parser.add_argument('--skiprfi', action='store_true', help='Use this to skip time-based rfi-peak removal.')
 args = parser.parse_args()
 
