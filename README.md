@@ -27,4 +27,17 @@ In a datafile it is of significant importance that we filter out RFI from the da
 ### Data Folding
 A pulsar signal is sometimes too weak, to nevertheless observe a pulsar, the data is folded periodically on the period of the pulsar. By doing this the signal over noise of the pulsar is signifantly increased. If we do not fold, this implies that only bright pulsars are visible by eye like PSR B0329+54 and some giant burst from less bright pulsars like the Crab pulsar. In this algorithm the data is folded for each frequency bin seperatly also this part of the program is accelerated by using `numba`. The folding algorithm is present in `folding.py`. On an average machine a folding of 10 minutes of data takes around 3 seconds.
 
+### Waterfall plots 
+Using the routines it is possible to produce a folded waterfall plot that shows an intensity map of the frequency and time (0 until period) of the folded data, using this it is possible to determine which frequency bins are important in this data and which bins are dominated by RFI, also it becomes clear using the waterfall plot how the dispersion measure influences the different frequencies by shifting different frequencies differently. The waterfall plot can be found in the `plotTools.py` file which has the function `waterfall` which only needs the argument of the folded 2d array.
+
+### Dispersion Measure correction
+For pulsars the dispersion measure is an important parameter which describes the amount of electrons between the pulsar and the observer (the Earth), in the case that electrons are present between the pulsar and the observer different wavelengths are delayed differently according to:
+$$ \Delta t = 4.15~\text{ms} DM \cdot \left( \left(\frac{\nu_1}{\text{GHz}}\right)^2 - \left(\frac{\nu_2}{\text{GHz}}\right)^2 \right) $$
+In which $DM$ is the dispersion measure in units of $\text{pc}~\text{cm}^{-3}$.
+
+
+
+
+
+
  
