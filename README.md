@@ -2,7 +2,7 @@
 Welcome on the github of PSF (Pulsar Spectral Folder)! PSF is the fastest spectral folder in the local Universe (much faster than those noobs in M31). This readme will explain what the different modules in PSF work. PSF is specifically designed to use pulsar data either live or for after processing. The aim of PSF is to do this as fast as possible, faster than any previous algorithm. Till know several live features exist: live plotting the pulsar signal and live folding of the pulsar signal, the first method is especially usefull for pulsars that have a significant flux like our home pulsar B0329+54, and live folding can be used for pulsars that are fainter like our neighbors pulsar like B2016+28. Furthermore the algorithm will be able in the comming time to save data on the spot when doing simultaneously live folding and live pulsar autoput. In the after processing also determining if weather balloons are present is designed and we are able to determine the period to a very high precission by using a Chi-squared approach. The details of these different features will be discussed in the following sections.
 
 ## Requirements
-The requirements of our program are written in `requirements.txt`.  Until now the only requirements are `numpy`, `scipy`, `matplotlib`, `tkinter`, `astropy` and `tqdm`. To get your system up to date with these packages you can use the following pip command:
+The requirements of our program are written in `requirements.txt`.  Until now the only requirements are `numpy`, `scipy`, `matplotlib`, `tkinter`, `astropy`, `numba` and `tqdm`. To get your system up to date with these packages you can use the following pip command:
 
 `pip install -r requirements.txt --user`
 
@@ -15,5 +15,16 @@ The main file of PSF is `main.py`, this file allowes you to run load data of an 
 ### Start screen
 PSF has an start screen which describes the motto of PSF and shown the authors of PSF. The start screen has its own module and this module can be found in `startscreen.py`. 
 
-### observation file
+### Observation file
 In the observation file `observation.py` constructs a class of Observations that allowes you to get the frequency range of the observation and other properties.
+obs.data = array with all 
+obs.freq
+obs.times
+
+### Flagging
+In a datafile it is of significant importance that we filter out RFI from the data such that only useful astronomical signals are used, so we do not use the electric cow fence or the encrypted signals from the police on our bands. For this we used a sophisticated flagging routine which we also call 'gras maaien', everything about flagging is in `flagging.py`. Currently the flagging routine is `numba` accelerated, which means it is a faster version due to some pre compilement.
+
+### Data Folding
+A pulsar signal is sometimes too weak, to nevertheless observe a pulsar, the data is folded periodically on the period of the pulsar. By doing this the signal over noise of the pulsar is signifantly increased. If we do not fold, this implies that only bright pulsars are visible by eye like PSR B0329+54 and some giant burst from less bright pulsars like the Crab pulsar. In this algorithm the data is folded for each frequency bin seperatly also this part of the program is accelerated by using `numba`. The folding algorithm is present in `folding.py`. On an average machine a folding of 10 minutes of data takes around 3 seconds.
+
+ 
