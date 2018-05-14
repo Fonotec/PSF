@@ -23,7 +23,7 @@ def startScreen(version):
     printString(version)
     hashLine()
     printString(authors)
-    printString('ROI KUGUL, REINIER KOET,')
+    printString('REINIER KOET, ROI KUGUL,')
     printString('FOLKERT NOBELS, ROLAND TIMMERMAN')
     printString('AND EWOUD WEMPE')
     hashLine()
