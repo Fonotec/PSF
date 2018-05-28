@@ -96,13 +96,16 @@ newdatapoint = 0
 
 normdata = np.zeros((20000,255)) ## 256->255
 for j in range(0,20000):
-    # get the package of the current time
-    #a = s.recv(2048)
-    # save the data in the array
-    #for i in range(1,512):
-        #data[i-1] = int.from_bytes(a[4*(i-1):4*i],byteorder='big')
-    #print(len(normdata[j]),len(data[256:]))
-    normdata[j] = obs.data[j]
+    if live:
+        # get the package of the current time
+        a = s.recv(2048)
+        # save the data in the array
+        for i in range(1,512):
+            data[i-1] = int.from_bytes(a[4*(i-1):4*i],byteorder='big')
+        #print(len(normdata[j]),len(data[256:]))
+        normdata[j] = data[256:]
+    else:
+        normdata[j] = obs.data[j]
 
 norm = np.sum(normdata, axis = 0)/20000
 
