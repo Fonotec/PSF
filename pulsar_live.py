@@ -111,15 +111,18 @@ norm = np.sum(normdata, axis = 0)/20000
 foldedarray = np.zeros(nbins)
 normalarray = np.zeros(nbins)
 while True:
-    # get the package of the current time
-    ## a = s.recv(2048)
-    
-    # save the data in the array
-    ## for i in range(1,512):
-        ## data[i-1] = int.from_bytes(a[4*(i-1):4*i],byteorder='big')
+    if live:
+        # get the package of the current time
+        a = s.recv(2048)
+        
+        # save the data in the array
+        for i in range(1,512):
+            data[i-1] = int.from_bytes(a[4*(i-1):4*i],byteorder='big')
 
-    ## localdata = data[256:]
-    localdata = obs.data[counter]
+        localdata = data[256:]
+    else:
+        localdata = obs.data[counter]
+
     time = counter*dt
     delay_dispersion = -4.148e3*DM*freq**(-2)
     time += delay_dispersion
