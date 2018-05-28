@@ -379,8 +379,8 @@ class MenuDFrame(tk.Frame):
         self.configure(bd=2, width=512, height=680, relief='sunken')
         self.grid_propagate(0) 
         
-        self.GoImage = tk.PhotoImage(file="./tkinter_start.gif")
-        self.StopImage = tk.PhotoImage(file="./tkinter_stop.gif")
+        self.GoImage = tk.PhotoImage(file="./images/tkinter_start.gif")
+        self.StopImage = tk.PhotoImage(file="./images/tkinter_stop.gif")
         
         self.GOBUTTON = tk.Button(self, image=self.GoImage, border=0, command=self.switchon)
         self.STOPBUTTON = tk.Button(self, image=self.StopImage)
