@@ -7,27 +7,37 @@ import matplotlib.pyplot as plt
 
 from observation import Observation
 from time import sleep
-obs = Observation("data/obs-10-04-2018/B0329+54_10-04-2018-withP.fits.gz")
 
-DM = obs.pulsar.DM
-period=0.71458
 
-# define data type unsigned int
-## unsignint = np.dtype(np.uint32)
+live = False
 
-# construct the socekt
-## s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-
-# get socket info
-## sinfo = socket.getaddrinfo('0.0.0.0',22102)
-
-# bind with the backend
-## s.bind(('0.0.0.0',22102))
-#s.connect(('10.1.2.3',22102))
 data = np.zeros(512,dtype=int)
 
-# receive one package
-## a = s.recv(2048)
+if live:
+
+    DM = 24.5
+    period = 0.71458
+    # define data type unsigned int
+    unsignint = np.dtype(np.uint32)
+
+    # construct the socekt
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+
+    # get socket info
+    sinfo = socket.getaddrinfo('0.0.0.0',22102)
+
+    # bind with the backend
+    s.bind(('0.0.0.0',22102))
+    #s.connect(('10.1.2.3',22102))
+
+    # receive one package
+    a = s.recv(2048)
+else:
+    obs = Observation("data/obs-10-04-2018/B0329+54_10-04-2018-withP.fits.gz")
+
+    DM = obs.pulsar.DM
+    period=0.71458
+
 
 # define a counter 
 counter = 0
