@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 import socket
 import numpy as np
-import matplotlib.pyplot as plt
 import matplotlib
 matplotlib.use('TKAgg')
+import matplotlib.pyplot as plt
 
 from observation import Observation
 from time import sleep
