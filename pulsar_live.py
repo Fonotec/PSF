@@ -2,7 +2,7 @@
 import socket
 import numpy as np
 import matplotlib
-matplotlib.use('TKAgg')
+matplotlib.use('Qt5Agg')
 import matplotlib.pyplot as plt
 
 from observation import Observation

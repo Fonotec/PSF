@@ -5,6 +5,24 @@ from pulsarsObjects import Pulsar, load_pulsar_data
 from astropy import units as u
 from barcen import barcen_times, barcen_freqs
 
+def calc_central_freqs(mix_freq, throwhighestfreqaway=True):
+    timevoltage = 1/(70e6) # (s), the time of each voltage measurement
+    timefft = 512*timevoltage # (s), the time of each fft block: of each 512 voltage measurements an fft is taken
+    dt = timefft * 64 # (s), to reduce the data rate, the sum of 64 ffts is taken
+    freqstep = (1/timefft)/1e6 # (MHz), the bandwidth of each frequency bin
+
+    maxfreq = (mix_freq+21.4) # (MHz)
+    minfreq = maxfreq-35 # (MHz)
+
+    freqs_edges = np.linspace(minfreq, maxfreq, 257) # Frequency bin edges
+    freqs = (freqs_edges[1:]+freqs_edges[:-1])/2 # Frequency bin centers
+    assert np.allclose(np.diff(freqs_edges), freqstep)
+    # The highest frequency is thrown away, to make place for the counter :(
+    # Not entirely sure if it was indeed the highest one, we still need to check that
+    if throwhighestfreqaway:
+        return freqs[:-1]
+    else:
+        return freqs
 
 class Observation:
     def __init__(self, fitsfile):
