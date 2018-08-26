@@ -9,17 +9,17 @@ The requirements of our program are written in `requirements.txt`.  Until now th
 ## The program
 In this section we describe the different module and sub routines in PSF.
 
+To try out the toold, you need some data files. An example can be obtained [here](https://www.astro.rug.nl/~camras/data/CAMRAS/obs-10-04-2018/B0329+54_10-04-2018-withP.fits.gz). 
+
 ### Main file
 The main file of PSF is `main.py`, this file allowes you to run load data of an observation and run an analysis on the data.
-
-### Start screen
-PSF has an start screen which describes the motto of PSF and shown the authors of PSF. The start screen has its own module and this module can be found in `startscreen.py`. 
+For folding and plotting the waterfall plots/pulse profile, you can use
+`
+./main.py -d data/obs-10-04-2018/B0329+54_10-04-2018-withP.fits.gz --nbins 1000 --nbinsdedisp 500
+`
 
 ### Observation file
-In the observation file `observation.py` constructs a class of Observations that allowes you to get the frequency range of the observation and other properties.
-obs.data = array with all 
-obs.freq
-obs.times
+In the observation file `observation.py` constructs a class of Observations that allows you to get the frequency range of the observation and other properties.
 
 ### Flagging
 In a datafile it is of significant importance that we filter out RFI from the data such that only useful astronomical signals are used, so we do not use the electric cow fence or the encrypted signals from the police on our bands. For this we used a sophisticated flagging routine which we also call 'gras maaien', everything about flagging is in `flagging.py`. Currently the flagging routine is `numba` accelerated, which means it is a faster version due to some pre compilement.
@@ -32,12 +32,9 @@ Using the routines it is possible to produce a folded waterfall plot that shows 
 
 ### Dispersion Measure correction
 For pulsars the dispersion measure is an important parameter which describes the amount of electrons between the pulsar and the observer (the Earth), in the case that electrons are present between the pulsar and the observer different wavelengths are delayed differently according to:
-$$ \Delta t = 4.15~\text{ms} DM \cdot \left( \left(\frac{\nu_1}{\text{GHz}}\right)^2 - \left(\frac{\nu_2}{\text{GHz}}\right)^2 \right) $$
+$$ \Delta t = 4.148~\text{ms} DM \cdot \left( \left(\frac{\nu_1}{\text{GHz}}\right)^2 - \left(\frac{\nu_2}{\text{GHz}}\right)^2 \right) $$
 In which $DM$ is the dispersion measure in units of $\text{pc}~\text{cm}^{-3}$.
 
-
-
-
-
-
- 
+It is also possible to find out the period of a pulsar (by folding the pulse at many periods, and finding out the best period), ask if you want it.
+And live pulsar folding is WIP...
+An interface, making this all pretty and easy to use is also WIP, a preview is in interface.py.
