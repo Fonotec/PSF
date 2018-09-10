@@ -16,8 +16,10 @@ live = False # Live? Or just testing?
 countmod = 10 # Once per how many packets should the to-plot array be updated?
 nbins = 500 # How many bins are to be used for folding?
 nlive = 1000 # How many points to plot the live version of?
-mixfreq = 403.975
-nframesinit = int(1/dt)
+mixfreq = 403.975 # The default...
+nframesinit = int(1/dt) # How long to collect normalization data
+
+MTU = 8900
 
 
 
@@ -38,23 +40,27 @@ def calc_freqs(mix_freq):
     return freqs
 
 
-
 def data_worker(pipe):
     # Waits for the telescope to send some new data and sends it to some pipe
     counter = 0
     pd_output, p_input = pipe
     data = np.zeros(512,dtype=int)
+    packet_counter = None
 
     while True:
         if live:
             # get the package of the current time
-            a = s.recv(2048)
+            a = s.recv(MTU)
             
             # save the data in the array
             for i in range(1,512):
                 data[i-1] = int.from_bytes(a[4*(i-1):4*i],byteorder='big')
 
-            localdata = data[257:]
+            if data[0] - 1 != packet_counter and packet_counter is not None:
+                print(f"Missed {data[0]-packet_counter} packets at {packet_counter}")
+            packet_counter=data[0]
+
+            localdata = data[257:] # Throwing lowest freq bin away here. Mostly for convenience, because this way it is consistent with the offline files.
         else:
             localdata = obs.data[counter]
             counter += 1
@@ -73,7 +79,7 @@ def fold_worker(pipe_data, livearray, folded_fullynormed):
 
     freq_norms = np.zeros(255)
     for i in range(nframesinit):
-        freq_norms += pd_output.recv()
+        freq_norms += pd_output.recv(MTU)
     
     print(freq_norms, freq_norms.min(), freq_norms.shape)
 
@@ -81,7 +87,7 @@ def fold_worker(pipe_data, livearray, folded_fullynormed):
     folding_norms = np.zeros(nbins)
     while True:
         tnow = time_ns()/1e6
-        localdata = pd_output.recv()
+        localdata = pd_output.recv(MTU)
         print(time_ns()/1e6-tnow)
         counter += 1
         time = counter*dt
@@ -157,18 +163,20 @@ def plot_worker(tp_live, tp_folded):
 
 if __name__ == '__main__':
     if live:
-        DM = 24.5
-        period = 0.71458
+        pulsar = Pulsar(pulsarname="B0329+54")
+        DM = pulsar.DM
+        period = pulsar.apparent_period()
 
-        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) # construct the socket
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, proto=socket.PROTOIP_UDP) # construct the socket
+        s.setsockopt(socket.SOL_SOCKET, socket.SO_RCVBUF, (8*1024*1024)) # May need tweaking.
         sinfo = socket.getaddrinfo('0.0.0.0',22102) # get socket info
         s.bind(('0.0.0.0',22102)) # bind with the backend
         #s.connect(('10.1.2.3',22102))
-        a = s.recv(2048) # Test it; receive one package
+        a = s.recv(MTU) # Test it; receive one package
     else:
         obs = Observation("data/obs-10-04-2018/B0329+54_10-04-2018-withP.fits.gz")
         DM = obs.pulsar.DM
-        period=0.71458 # TODO: Calculate the observed one from Doppler Shift.
+        period = obs.pulsar.apparent_period(tobs=obs.obs_middle)
 
     freq = calc_freqs(mixfreq)[1:]
 
