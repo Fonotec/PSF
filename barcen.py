@@ -7,19 +7,28 @@ from scipy.interpolate import interp1d
 telescope_location = EarthLocation(lat=52.812162*u.deg, lon=6.3963282*u.deg, height=35*u.m)
 dt = 512*64/70e6
 
+def zplus1(pulsar, obs_time):
+    """
+    Calculates 1+z for the specific pulsar and time, ignoring time dilation.
+    """
+    pulsar_loc = SkyCoord(ra=pulsar.RAJD*u.deg, dec=pulsar.DECJD*u.deg)
+    vel_cor = pulsar_loc.radial_velocity_correction(kind='barycentric', obstime=obs_time, location=telescope_location)
+    return (1+(vel_cor/c.c).to_value(1))
+
+
 def barcen_freqs(pulsar, freqs, obs_time_middle):
     """Corrects for the first order redshift because of the barycentric motion of the earth
     
     pulsar -- the pulsar object that will be used for the location of the pulsar
     freqs -- The array with the observed frequencies
     obsmiddle -- the datetime of the middle of the observation as astropy Time object (let's keep things simple for the moment, and not consider changing frequencies etc...)
+    (nitpick: SSB frequencies are not perfect for DM calculations, but really good enough...)
 
     Returns:
     The frequencies that would have been observed at the SSB
     """
-    pulsar_loc = SkyCoord(ra=pulsar.RAJD*u.deg, dec=pulsar.DECJD*u.deg)
-    vel_cor = pulsar_loc.radial_velocity_correction(kind='barycentric', obstime=obs_time_middle, location=telescope_location)
-    return freqs/(1+(vel_cor/c.c).to_value(1))
+    
+    return freqs*zplus1(pulsar, obs_time_middle)
 
 def barcen_times(pulsar, obs_duration, obsstart=Time.now()):
     """Calculates the times that photons would have arrived at the solar system Barycenter

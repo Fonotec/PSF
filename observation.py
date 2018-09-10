@@ -47,8 +47,7 @@ class Observation:
         else:
             self.chisqperiod = None
 
-        psrdata = load_pulsar_data(self.psr_name)
-        self.pulsar = Pulsar(psrdata, tobs=self.obs_start, chisqperiod=self.chisqperiod)
+        self.pulsar = Pulsar(pulsarname=self.psr_name, tobs=self.obs_start, chisqperiod=self.chisqperiod)
 
         self.times = barcen_times(self.pulsar, len(self.data), obsstart=self.obs_start)
         self.calc_freqs()

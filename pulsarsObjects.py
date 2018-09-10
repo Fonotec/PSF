@@ -2,6 +2,7 @@
 import numpy as np
 from astropy.time import Time
 from astropy import units as u
+import barcen
 
 # Loading the data
 def load_pulsar_data(pulsar_name, pulsarcat_file='small-data-files/pulsarcat.csv'):
@@ -22,13 +23,16 @@ def load_pulsar_data(pulsar_name, pulsarcat_file='small-data-files/pulsarcat.csv
 # class for pulsars
 class Pulsar:
     # constructor of the pulsar
-    def __init__(self, pulsardata, tobs=Time.now(), chisqperiod=None):
+    def __init__(self, pulsardata=None, pulsarname=None, tobs=Time.now(), chisqperiod=None):
         # read the array, and make every object accessible like pulsar.period
+        if pulsarname is not None:
+            pulsardata = load_pulsar_data(pulsarname)
+
         for i in pulsardata.dtype.names:
             setattr(self, i, pulsardata[i][0])
 
         self.distance = pulsardata['DIST']
-        self.lit_period = self.currentPeriod(tobs)
+        self.lit_period = self.current_period(tobs)
         if chisqperiod is None:
             self.period = self.lit_period
         else:
@@ -37,9 +41,15 @@ class Pulsar:
 
     
     # The period that the pulsar has now, considering the first period derivative
-    def currentPeriod(self, tobs=Time.now()):
+    def current_period(self, tobs=Time.now()):
         timediff = (tobs - Time(self.PEPOCH, format='mjd')).to(u.s).value
         return self.P0 + self.P1 * timediff
+
+
+    def apparent_period(self, tobs=Time.now()):
+        """Calculates the period you would measure without correcting for the barycentric motion of the earth. Correct up to first order (no changing velocity)."""
+        return self.period / barcen.zplus1(self, tobs)
+
 
     @property
     def getPeriod(self):
