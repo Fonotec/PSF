@@ -146,6 +146,7 @@ int main(int argc, char ** argv)
 
 	while(1) { 
 		if(recvfrom(fd, packet, MTU, 0, (struct sockaddr *)&client_addr, &client_len)<0) {
+    // Receive the current message. Discard after MTU bytes
 			fprintf(stderr, "recvfrom failed\n");
 			exit(10);
 		}
@@ -153,6 +154,7 @@ int main(int argc, char ** argv)
 		seqno = ntohl(packet[0]);
 		if(seqno1 == 0) seqno1 = seqno;
 		if ((seqno - oseqno > 1) && (oseqno != 0)) {
+    // if packets were missed, fill them in with a nice value. */
 			fprintf(stderr,"Missed %ld packets\n",seqno -oseqno);
 			for (j=oseqno + 1; j< seqno; j++) {
 				for(i=START; i<START+POINTS; i++) {
@@ -167,6 +169,7 @@ int main(int argc, char ** argv)
 		sum = 0;
 
 		for(i=START; i<START+POINTS; i++) {
+            /* Discard first START=40 channels */
 			disp_buffer[i*maxdisp + (seqno - disp[i]) % maxdisp] = ntohl(packet[i+1]);
 			if(seqno == seqno1) {
 				avg[i] = disp_buffer[i*maxdisp + seqno % maxdisp];
@@ -184,6 +187,7 @@ int main(int argc, char ** argv)
 		/*		 printf("%lf\n%d\n",sum/POINTS,output); */
 		buffer[seqno % BUFFER] = sum/POINTS;
 		if (seqno % 64 == 0) { 
+/* EW: Once every 64 dt's, update the graph */
 			printf("set xrange [%lf:%lf]\n",(seqno - BUFFER)/period, seqno/period);
 			printf("plot '-' notitle w l\n");
 			for (i = 0; i< BUFFER; i+=PPP) {

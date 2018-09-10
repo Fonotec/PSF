@@ -17,10 +17,11 @@ def calc_central_freqs(mix_freq, throwhighestfreqaway=True):
     freqs_edges = np.linspace(minfreq, maxfreq, 257) # Frequency bin edges
     freqs = (freqs_edges[1:]+freqs_edges[:-1])/2 # Frequency bin centers
     assert np.allclose(np.diff(freqs_edges), freqstep)
-    # The highest frequency is thrown away, to make place for the counter :(
-    # Not entirely sure if it was indeed the highest one, we still need to check that
+    # Previously wrong! 
+    # The lowest frequency is instead thrown away to make place for the packet counter. 
+    # Source: c-files/pulsar-live2.c, where bin 256 = lowest frequency is replaced.
     if throwhighestfreqaway:
-        return freqs[:-1]
+        return freqs[1:]
     else:
         return freqs
 

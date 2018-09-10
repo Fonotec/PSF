@@ -123,6 +123,7 @@ int main(int argc, char * argv[])
 	}
 	memcpy(packet_buf+256*4, packet_buf, 4); /* Copy the packet counter to second half */
 	write(fdw,packet_buf+256*4,256*4);  /* Write only the second half */
+    // So that implies that the frequency freq(256) is discarded. That bin starts at FREQ+21.4-35.0 MHz. 
 	j++;
 	if (j % (int)(70000000/512/64) == 0)
 	{
