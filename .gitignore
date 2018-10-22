@@ -10,3 +10,4 @@ __pycache__/
 # Data files
 *.dat
 *.fits
+data
