@@ -7,7 +7,7 @@ class yamlclass:
         
         yaml=YAML(typ='safe')
 
-        with open('test.yml','r') as ymlfile:
+        with open(paramyml,'r') as ymlfile:
             cfg = yaml.load(ymlfile)
 
 
@@ -18,7 +18,8 @@ class yamlclass:
             YAMLerr('Observation not given.')
             exit(-1)
 
-        self.Filename = obsdict['Filename']
+        # Store the variables of the part in variables in the class
+        self.FileName = obsdict['FileName']
         self.RawData = int(obsdict['RawData'])
         if self.RawData==0:
             self.ObsDate = obsdict['ObsDate']
@@ -33,6 +34,7 @@ class yamlclass:
             YAMLerr('Folding not given.')
             exit(-1)
 
+        # Store the folding parameters in the class
         self.nbins = folding['nbins']
         self.nbinsdedisp = folding['nbinsdedisp']
 
@@ -43,31 +45,45 @@ class yamlclass:
             YAMLerr('Output not specified.')
             exit(-1)
 
-        self.OutputDir = output['OutputDit']
+        # Store the output specific parameters in the class
+        self.OutputDir = output['OutputDir']
         self.ConvertRaw = output['ConvertRaw']
 
-
-
-
-        dochi = True
+        # Check if we do the Chi Fit
+        self.dochi = True
         try:
             chifit = cfg['ChiFit']
         except:
-            dochi = False
+            self.dochi = False
 
+        # Store the Chi Fit parameters if we do the Chi Fit.
+        if self.dochi:
+            self.Plow = float(chifit['Plow'])
+            self.Phigh = float(chifit['Phigh'])
+            self.Ntries = int(chifit['Ntries'])
+            self.fitfunc = chifit['FitFunc']
 
-
-        domaaien = True
+        # Check if we do grasmaaien 
+        self.domaaien = True
         try:
             Grasmaaien = cfg['GrasMaaier']
         except:
-            domaaien = False
+            self.domaaien = False
+
+        # Store the maaien parameters if we are `aan het grasmaaien'
+        if self.domaaien:
+            self.STDCut = float(Grasmaaien['STDCut'])
+            self.Meantype = Grasmaaien['Meantype']
 
     def YAMLerr(self,string):
         print('YAML ERROR: '+string)
 
-
-
+    
+# Initialize as:
+# param = yamlclass('param.yml')
+# Calling parameters as:
+# print(param.FileName)
+# print(param.STDCut)
 
 
 

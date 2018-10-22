@@ -1,6 +1,6 @@
 # Information about the data file
 Observation:
-  Filename:       'huispulsar.fits'
+  FileName:       'huispulsar.fits'
   RawData:        0                   # 1 for raw data, 0 for data with info
   FileExtension:  '.fits'             # optional
   ObsDate:        '13-11-2018'        # optional only for raw data
@@ -23,11 +23,10 @@ ChiFit:
   Plow:          0.70           # lower bound period
   Phigh:         0.75           # higher bound period
   Ntries:        1000           # Ntries
-  fitfunc:       'Lorentzian'   # Fit function Lorentzian or a absolute exponential
+  FitFunc:       'Lorentzian'   # Fit function Lorentzian or a absolute exponential
 
 # RFI removal scheme
 GrasMaaier:
-  maaien:        0         # 0 no grasmaaien & 1 for grasmaaien
   STDCut:        5         # from which amount of STD do we cut
   Meantype:      'rolling' # type of mean, rolling mean best mean
 
