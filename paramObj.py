@@ -25,7 +25,7 @@ class yamlclass:
             self.ObsDate = obsdict['ObsDate']
             self.ObsTime = obsdict['ObsTime']
             self.PulsarName = obsdict['PulsarName']
-            self.CentreFreq = obsdict['CentreFreq']
+            self.CentreFreq = float(obsdict['CentreFreq'])
 
         # Read the folding parameters from the YAML file
         try:
@@ -35,8 +35,8 @@ class yamlclass:
             exit(-1)
 
         # Store the folding parameters in the class
-        self.nbins = folding['nbins']
-        self.nbinsdedisp = folding['nbinsdedisp']
+        self.nbins = int(folding['nbins'])
+        self.nbinsdedisp = int(folding['nbinsdedisp'])
 
         # Read the Output parameters from the YAML file
         try:
@@ -47,7 +47,7 @@ class yamlclass:
 
         # Store the output specific parameters in the class
         self.OutputDir = output['OutputDir']
-        self.ConvertRaw = output['ConvertRaw']
+        self.ConvertRaw = int(output['ConvertRaw'])
 
         # Check if we do the Chi Fit
         self.dochi = True
