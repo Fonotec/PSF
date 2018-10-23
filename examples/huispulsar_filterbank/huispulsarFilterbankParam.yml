@@ -1,0 +1,17 @@
+# Information about the data file
+Observation:
+  FileName:       'huispulsar.fits'
+  RawData:        0                   # 1 for raw data, 0 for data with info
+
+# Folding parameters
+Folding:
+  nbins:          500           # Number of bins for folding 
+  nbinsdedisp:    500           # Number of bins for dedispersed profile
+
+# Output parameters
+Output:
+  OutputDir:      './output'
+  ConvertRaw:     1             # if raw convert to fits
+  
+
+
