@@ -1,12 +1,13 @@
+# Except for the output and filename, what is left out is read from the defaults.yml file.
 # Information about the data file
 Observation:
   FileName:       'huispulsar.fits'
-  RawData:        0                   # 1 for raw data, 0 for data with info
-  FileExtension:  '.fits'             # optional
-  ObsDate:        '13-11-2018'        # optional only for raw data
-  ObsTime:        '14:13'             # optional only for raw data
-  PulsarName:     'B0329+54'          # optional only for raw data
-  CentreFreq:     405                 # optional only for raw data, in MHz.
+  RawData:        false
+  MetaData:                           # Only necessary if RawData is true
+    FileFormat:   'fits'              # raw, fits, or filterbank (future...). Optional, overwrite automatic determination from extension
+    ObsDate:      '13-11-2018 14:30:00.00(UTC)'        # optional, only for raw data. Format readable by astropy.time.Time (see )
+    PulsarName:   'B0329+54'          # optional only for raw data
+    MixFreq:      405                 # optional only for raw data, in MHz.
 
 # Folding parameters
 Folding:
@@ -16,21 +17,21 @@ Folding:
 # Output parameters
 Output:
   OutputDir:      './output'
-  ConvertRaw:     1             # if raw convert to fits
+  ConvertRaw:     true          # if raw convert to fits and write to OutputDir
   
+# If not wanted, you can just set ChiFit to false, and nothing will be done:
+# ChiFit: false
+
 # Chifit parameters
 ChiFit:
-  Plow:          0.70           # lower bound period
-  Phigh:         0.75           # higher bound period
-  Ntries:        1000           # Ntries
-  FitFunc:       'Lorentzian'   # Fit function Lorentzian or a absolute exponential
+   Ntries:       1000           # How many periods to calculate the average over
+   nbins_time:   1000           # Amount of time bins to be used for calculating chisquared
+   nbins_freq:   1000           # Amount of freq  bins to be used for calculating chisquared
+   trywidth:     1e-3           # Time width of the period tries: (1-width)P_lit<P_try<(1+width)P_lit
+   FitFunc:      'Lorentzian'   # Fit function to fit to the chisq as function of trial period. If left empty, will try all and prompt the user. 
+ 
 
 # RFI removal scheme
 GrasMaaier:
   STDCut:        5         # from which amount of STD do we cut
   Meantype:      'rolling' # type of mean, rolling mean best mean
-
-
-
-
-
