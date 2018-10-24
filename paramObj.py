@@ -1,91 +1,68 @@
 #!/usr/bin/env python
 import numpy as np
 from ruamel.yaml import YAML
+from copy import deepcopy
 
-class yamlclass:
-    def __init__(self,paramyml):
-        
+# https://stackoverflow.com/questions/36831998/how-to-fill-default-parameters-in-yaml-file-using-python
+def setdefault_recursively(tgt, default):
+    for k in default:
+        if isinstance(default[k], dict): # if the current item is a dict,
+            # expand it recursively
+            setdefault_recursively(tgt.setdefault(k, {}), default[k])
+        elif isinstance(tgt, dict):
+            # ... otherwise simply set a default value if it's not set before
+            tgt.setdefault(k, default[k])
+
+# https://stackoverflow.com/a/38034502
+class AttrDict(dict):                            
+     """ Dictionary subclass whose entries can be accessed by attributes
+         (as well as normally).
+     """
+     def __init__(self, *args, dict_data=None, **kwargs):
+         if dict_data is None:
+             super(AttrDict, self).__init__(*args, **kwargs)
+             self.__dict__ = self
+         else:
+             super(AttrDict, self).__init__(self.from_nested_dict(dict_data))
+             self.__dict__ = self
+ 
+     @staticmethod
+     def from_nested_dict(data):
+         """ Construct nested AttrDicts from nested dictionaries. """
+         if not isinstance(data, dict):
+             return data
+         else:
+             return AttrDict({key: AttrDict.from_nested_dict(data[key])
+                                 for key in data})
+
+class Config(AttrDict):
+    """
+    # Initialize as:
+    param = yamlclass('param.yml')
+
+    # Calling parameters as:
+    print(param.FileName)
+    print(param.ChiFit.Ntries)
+
+    # These values have been replaced with defaults if the user did not input them
+    # The actual user input is still available from param.usercfg.
+    """
+    def __init__(self,paramyml, defaults='defaults.yml'):
         yaml=YAML(typ='safe')
 
         with open(paramyml,'r') as ymlfile:
             cfg = yaml.load(ymlfile)
+        with open('defaults.yml','r') as ymlfile:
+            defaults = yaml.load(ymlfile)
+
+        usercfg = deepcopy(cfg)
+        setdefault_recursively(cfg, default=defaults)
 
 
-        # Read the Observation parameters from the YAML file
-        try:
-            obsdict = cfg['Observation']
-        except:
-            YAMLerr('Observation not given.')
-            exit(-1)
+        # Input validation can happen here
+        assert 'Observation' in cfg, 'Provide observation parameters'
+        assert 'Output' in cfg, 'Provide output information'
+        super(Config, self).__init__(dict_data=cfg) # Magic...
 
-        # Store the variables of the part in variables in the class
-        self.FileName = obsdict['FileName']
-        self.RawData = int(obsdict['RawData'])
-        if self.RawData==0:
-            self.ObsDate = obsdict['ObsDate']
-            self.ObsTime = obsdict['ObsTime']
-            self.PulsarName = obsdict['PulsarName']
-            self.CentreFreq = float(obsdict['CentreFreq'])
-
-        # Read the folding parameters from the YAML file
-        try:
-            folding = cfg['Folding']
-        except:
-            YAMLerr('Folding not given.')
-            exit(-1)
-
-        # Store the folding parameters in the class
-        self.nbins = int(folding['nbins'])
-        self.nbinsdedisp = int(folding['nbinsdedisp'])
-
-        # Read the Output parameters from the YAML file
-        try:
-            output = cfg['Output']
-        except:
-            YAMLerr('Output not specified.')
-            exit(-1)
-
-        # Store the output specific parameters in the class
-        self.OutputDir = output['OutputDir']
-        self.ConvertRaw = int(output['ConvertRaw'])
-
-        # Check if we do the Chi Fit
-        self.dochi = True
-        try:
-            chifit = cfg['ChiFit']
-        except:
-            self.dochi = False
-
-        # Store the Chi Fit parameters if we do the Chi Fit.
-        if self.dochi:
-            self.Plow = float(chifit['Plow'])
-            self.Phigh = float(chifit['Phigh'])
-            self.Ntries = int(chifit['Ntries'])
-            self.fitfunc = chifit['FitFunc']
-
-        # Check if we do grasmaaien 
-        self.domaaien = True
-        try:
-            Grasmaaien = cfg['GrasMaaier']
-        except:
-            self.domaaien = False
-
-        # Store the maaien parameters if we are `aan het grasmaaien'
-        if self.domaaien:
-            self.STDCut = float(Grasmaaien['STDCut'])
-            self.Meantype = Grasmaaien['Meantype']
-
-    def YAMLerr(self,string):
-        print('YAML ERROR: '+string)
-
-    
-# Initialize as:
-# param = yamlclass('param.yml')
-# Calling parameters as:
-# print(param.FileName)
-# print(param.STDCut)
-
-
-
-
-
+        self.usercfg = AttrDict(usercfg)
+        self.defaults= AttrDict(defaults)
