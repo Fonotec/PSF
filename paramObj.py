@@ -60,8 +60,8 @@ class Config(AttrDict):
 
 
         # Input validation can happen here
-        assert 'Observation' in cfg, 'Provide observation parameters'
-        assert 'Output' in cfg, 'Provide output information'
+        assert 'FileName' in usercfg, 'Provide observation parameters'
+        assert 'Output' in usercfg, 'Provide output information'
         super(Config, self).__init__(dict_data=cfg) # Magic...
 
         self.usercfg = AttrDict(usercfg)

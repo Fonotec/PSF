@@ -4,6 +4,7 @@ from astropy.time import Time
 from pulsarsObjects import Pulsar, load_pulsar_data
 from astropy import units as u
 from barcen import barcen_times, barcen_freqs
+from loadData import loader
 
 def calc_central_freqs(mix_freq, throwhighestfreqaway=True):
     timevoltage = 1/(70e6) # (s), the time of each voltage measurement
@@ -26,23 +27,43 @@ def calc_central_freqs(mix_freq, throwhighestfreqaway=True):
         return freqs
 
 class Observation:
-    def __init__(self, fitsfile):
-        hdulist = fits.open(fitsfile)
-        header = hdulist[1].header
-        self.data = hdulist[1].data
-        self.psr_name = header['SRC_NAME']
-        self.obs_start_isot = header['DATE-OBS']
-        self.mix_freq = header['FREQMIX']
+    def __init__(self, cfg=None, fitsfile=None):
+        if fitsfile is None:
+            fileformat = cfg.FileFormat if 'FileFormat' in cfg else cfg.FileName
+            filename = cfg.FileName
+        else:
+            fileformat="fits"
+            filename = fitsfile
 
+        if fileformat.endswith('fits') or fileformat.endswith('fits.gz'):
+            self.using_fits = True
+            hdulist = fits.open(filename)
+            header = hdulist[1].header
+            self.data = hdulist[1].data
+            self.psr_name = header['SRC_NAME']
+            self.obs_start_isot = header['DATE-OBS']
+            self.mix_freq = header['FREQMIX']
+        else:
+            self.using_fits = False
+            self.psr_name = cfg.ObsMetaData.PulsarName
+            self.obs_start_isot = cfg.ObsMetaData.ObsDate
+            self.mix_freq = cfg.ObsMetaData.MixFreq
+            if fileformat.endswith('fil'):
+                raise NotImplementedError('Filterbank supported yet!')
+            elif fileformat.endswith('raw'):
+                assert cfg.RawData, 'Need to supply the metadata!'
+                self.data = loader(cfg.FileName).astype(np.uint32)
+            else:
+                raise ValueError('Unrecognized format')
 
-        self.obs_start = Time(self.obs_start_isot, format='isot')
+        self.obs_start = Time(self.obs_start_isot)
         dt = 64*512/(70e6)
         self.obs_dur = len(self.data) * dt
-        self.obs_end = Time(self.obs_start) +  self.obs_dur * u.s
+        self.obs_end = self.obs_start +  self.obs_dur * u.s
         self.obs_times = np.arange(len(self.data)) * dt
-        self.obs_middle = self.obs_dur*u.s + self.obs_start
+        self.obs_middle = self.obs_dur*u.s/2 + self.obs_start
 
-        if len(hdulist)>2:
+        if self.using_fits and len(hdulist)>2:
             self.chisqperiod = hdulist[2].header['bestp']
         else:
             self.chisqperiod = None
@@ -50,23 +71,5 @@ class Observation:
         self.pulsar = Pulsar(pulsarname=self.psr_name, tobs=self.obs_start, chisqperiod=self.chisqperiod)
 
         self.times = barcen_times(self.pulsar, len(self.data), obsstart=self.obs_start)
-        self.calc_freqs()
-
-    def calc_freqs(self):
-        timevoltage = 1/(70e6) # (s), the time of each voltage measurement
-        timefft = 512*timevoltage # (s), the time of each fft block: of each 512 voltage measurements an fft is taken
-        dt = timefft * 64 # (s), to reduce the data rate, the sum of 64 ffts is taken
-        freqstep = (1/timefft)/1e6 # (MHz), the bandwidth of each frequency bin
-
-        maxfreq = (self.mix_freq+21.4) # (MHz)
-        minfreq = maxfreq-35 # (MHz)
-
-        freqs_edges = np.linspace(minfreq, maxfreq, 257) # Frequency bin edges
-        freqs = (freqs_edges[1:]+freqs_edges[:-1])/2 # Frequency bin centers
-        assert np.allclose(np.diff(freqs_edges), freqstep)
-        # The highest frequency is thrown away, to make place for the counter :(
-        # Not entirely sure if it was indeed the highest one, we still need to check that
-        self.freq_edges_uncor = freqs_edges[:-1]
-        self.freq_uncor = freqs[:-1]
-        self.freq_edges = barcen_freqs(self.pulsar, self.freq_edges_uncor, self.obs_middle)
-        self.freq = barcen_freqs(self.pulsar, self.freq_uncor, self.obs_middle)
+        self.freq_uncor = calc_central_freqs(self.mix_freq)
+        self.freq = barcen_freqs(self.pulsar, self.freq_uncor, self.obs_middle) # Probably unnecessary...

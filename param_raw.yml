@@ -1,6 +1,12 @@
 # Except for the output and filename, what is left out is read from the defaults.yml file.
 # Information about the data file
-FileName:       './data/obs-03-06-2018/PSR_B2021+51-13:15.fits'
+FileName:       'data/obs-18-11-2016/B0329 54.2016.11.18.1038.5min.dat'
+RawData:        true
+FileFormat:     'raw'              # raw, fits, or fil (future...). Optional, overwrite automatic determination from extension
+ObsMetaData:                           # Only necessary if RawData is true
+  ObsDate:      '2016-11-18T10:18:00.00(UTC)'        # optional, only for raw data. Format readable by astropy.time.Time (see )
+  PulsarName:   'B0329+54'          # optional only for raw data
+  MixFreq:      405                 # optional only for raw data, in MHz.
 
 # Folding parameters
 Folding:
@@ -10,6 +16,7 @@ Folding:
 # Output parameters
 Output:
   OutputDir:      './output'    # Will overwrite any old files without warning.
+  ConvertRaw:     true         # if raw convert to fits and write to OutputDir
   SavePlots:      true          # Saves all relevant plots in OutputDir
   
 # If not wanted, you can just set ChiFit to false, and nothing will be done:
@@ -25,4 +32,7 @@ ChiFit:
  
 
 # RFI removal scheme
-GrasMaaier: {} # {} (empty dict) implies default params!
+GrasMaaier:
+  STDCut:          5         # from which amount of STD do we cut
+  FilterType:      'pyramid' # type of filter, 'pyramid' or 'tophat' possible.
+  FilterWindow:    100001    # Number of data points to be used for the smoothed function. 
