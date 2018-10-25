@@ -16,12 +16,16 @@ def pyramid_average(a,n=5):
     return moving_average(moving_average(a, n//2+1), n//2+1)
 
 @njit
-def flagData(data, nwindow=100001, signific=5):
+def flagData(data, nwindow=100001, signific=5, filtertype=0):
+    # Filtertype: 0 for pyramid, 1 for tophat
     time_num_points, freq_num_points = data.shape
     indbad = (data==0)
     for i in range(freq_num_points):
         dset = data[:,i]
-        smoothed=pyramid_average(dset, n=nwindow)
+        if filtertype == 1:
+            smoothed=moving_average(dset, n=nwindow)
+        else:
+            smoothed=pyramid_average(dset, n=nwindow)
         residuals = (dset-smoothed)
         std = residuals.std()
         indbad[:,i] |=  residuals > signific*std

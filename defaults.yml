@@ -1,0 +1,26 @@
+# These will be used if not given in the file given by default
+
+RawData: false
+
+# Folding parameters
+Folding:
+  nbins:          500           # Number of bins for folding 
+  nbinsdedisp:    200           # Number of bins for dedispersed profile
+
+# Chifit parameters
+ChiFit:
+  Ntries:       1000           # How many periods to calculate the average over
+  nbins_time:   1000           # Amount of time bins to be used for calculating chisquared
+  nbins_freq:   1000           # Amount of freq  bins to be used for calculating chisquared
+  trywidth:     1e-3           # Time width of the period tries: (1-width)P_lit<P_try<(1+width)P_lit
+  FitFunc:      'Lorentzian'   # Fit function to fit to the chisq as function of trial period. If left empty, will try all and prompt the user. 
+
+Output:
+    ConvertRaw: true
+
+
+# RFI removal scheme
+GrasMaaier:
+  STDCut:          5         # from which amount of STD do we cut
+  FilterType:      'pyramid' # type of filter, 'pyramid' or 'tophat' possible.
+  FilterWindow:    100001    # Number of data points to be used for the smoothed function. 
