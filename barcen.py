@@ -1,8 +1,16 @@
-from astropy.coordinates import SkyCoord, EarthLocation
+from astropy.coordinates import SkyCoord, EarthLocation, solar_system_ephemeris
 from astropy import units as u, constants as c
 from astropy.time import Time
 import numpy as np
 from scipy.interpolate import interp1d
+
+try:
+    solar_system_ephemeris.set("jpl")
+    print("Using jpl ephemeris")
+except ImportError:
+    print("Using astropy builtin ephemeris. Install jplephem package to use the (better) jpl values.")
+    pass
+
 
 telescope_location = EarthLocation(lat=52.812162*u.deg, lon=6.3963282*u.deg, height=35*u.m)
 dt = 512*64/70e6
