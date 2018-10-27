@@ -9,5 +9,5 @@ fi
 
 # Run PSF
 echo "Run PSF"
-../../main.py buurpulsarRawParam.yml
+python3 ../../main.py buurpulsarRawParam.yml
 
