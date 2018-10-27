@@ -48,7 +48,7 @@ class Config(AttrDict):
     # These values have been replaced with defaults if the user did not input them
     # The actual user input is still available from param.usercfg.
     """
-    def __init__(self,paramyml, defaults='./../../defaults.yml'):
+    def __init__(self,paramyml, defaults=Path(__file__).parent/'defaults.yml'):
         yaml=YAML(typ='safe')
 
         with open(paramyml,'r') as ymlfile:
