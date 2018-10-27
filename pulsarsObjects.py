@@ -5,7 +5,7 @@ from astropy import units as u
 import barcen
 
 # Loading the data
-def load_pulsar_data(pulsar_name, pulsarcat_file='small-data-files/pulsarcat.csv'):
+def load_pulsar_data(pulsar_name, pulsarcat_file='./../../small-data-files/pulsarcat.csv'):
     # read the data of the pulsar database
     pulsardata = np.genfromtxt(pulsarcat_file, delimiter=",", dtype=None, names=True, missing_values="*")
     # Find the index of the correct pulsar
