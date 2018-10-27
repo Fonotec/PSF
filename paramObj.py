@@ -2,6 +2,7 @@
 import numpy as np
 from ruamel.yaml import YAML
 from copy import deepcopy
+from pathlib import Path
 
 # https://stackoverflow.com/questions/36831998/how-to-fill-default-parameters-in-yaml-file-using-python
 def setdefault_recursively(tgt, default):
@@ -52,7 +53,7 @@ class Config(AttrDict):
 
         with open(paramyml,'r') as ymlfile:
             cfg = yaml.load(ymlfile)
-        with open('./../../defaults.yml','r') as ymlfile:
+        with open(Path(__file__).parent/'defaults.yml','r') as ymlfile:
             defaults = yaml.load(ymlfile)
 
         usercfg = deepcopy(cfg)
