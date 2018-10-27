@@ -1,7 +1,6 @@
-# Information about the data file
-Observation:
-  FileName:       'B0329+54_10-04-2018.fits.gz'
-  RawData:        0                   # 1 for raw data, 0 for data with info
+# Information about the data file  
+
+FileName:       'B0329+54_10-04-2018.fits.gz'
 
 # Folding parameters
 Folding:
@@ -11,14 +10,13 @@ Folding:
 # Output parameters
 Output:
   OutputDir:      './output'
-  ConvertRaw:     1             # if raw convert to fits
-  
-# Chifit parameters
-ChiFit:
-  Plow:          0.70           # lower bound period
-  Phigh:         0.75           # higher bound period
-  Ntries:        1000           # Ntries
-  FitFunc:       'Lorentzian'   # Fit function Lorentzian or a absolute exponential
+  SavePlots:      true
 
+ChiFit: 
+  Ntries:      1000
+  nbins_time:  1000
+  nbins_freq:  1000
+  trywidth:    1e-3
+  FitFunc:     'Lorentzian'
 
-
+GrasMaaier: {}
