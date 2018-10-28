@@ -5,6 +5,9 @@ from pulsarsObjects import Pulsar, load_pulsar_data
 from astropy import units as u
 from barcen import barcen_times, barcen_freqs
 from loadData import loader
+from pathlib import Path
+from filterBank import filterBankReadMetaData
+from blimpy import Waterfall
 
 def calc_central_freqs(mix_freq, throwhighestfreqaway=True):
     timevoltage = 1/(70e6) # (s), the time of each voltage measurement
@@ -43,6 +46,16 @@ class Observation:
             self.psr_name = header['SRC_NAME']
             self.obs_start_isot = header['DATE-OBS']
             self.mix_freq = header['FREQMIX']
+        elif fileformat.endswith('fil'):
+            self.using_fits = False 
+            obs = Waterfall(filename)
+            header = obs.header
+            self.psr_name = header[b'source_name']
+            self.obs_start_isot = header[b'tstart']
+            # Tammo-Jan doesn't store the mix frequency
+            self.mix_freq = header[b'fch1']-21.668359375
+            self.data = obs.data
+            #raise NotImplementedError('Filterbank supported yet!')
         else:
             self.using_fits = False
             self.psr_name = cfg.ObsMetaData.PulsarName
@@ -56,7 +69,10 @@ class Observation:
             else:
                 raise ValueError('Unrecognized format')
 
-        self.obs_start = Time(self.obs_start_isot)
+        if fileformat.endswith('fil'):
+            self.obs_start = Time(self.obs_start_isot,format='jd')
+        else:
+            self.obs_start = Time(self.obs_start_isot)
         dt = 64*512/(70e6)
         self.obs_dur = len(self.data) * dt
         self.obs_end = self.obs_start +  self.obs_dur * u.s
