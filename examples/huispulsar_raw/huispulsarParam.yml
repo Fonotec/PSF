@@ -1,0 +1,24 @@
+# Information about the data file  
+
+FileName:       'B0329+54.2016.11.18.1038.5min.dat'
+RawData:        true
+FileFormat:     'raw'
+ObsMetaData:    
+  ObsDate:      '2016-11-18:T10:38:00.00(UTC)'
+  PulsarName:   'B0329+54'
+  MixFreq:      405
+
+# Folding parameters
+Folding:
+  nbins:          500           # Number of bins for folding 
+  nbinsdedisp:    500           # Number of bins for dedispersed profile
+
+# Output parameters
+Output:
+  OutputDir:      './output'
+  ConvertRaw:     true
+  SavePlots:      true
+
+ChiFit: false
+
+GrasMaaier: {}
