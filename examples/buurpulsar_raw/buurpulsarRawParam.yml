@@ -1,12 +1,12 @@
 # Information about the data file  
 
-FileName:       'B2016+28_406MHz_2017-12-30.raw'
+FileName:       'B2016-28_10-04-2018.dat'
 RawData:        true
 FileFormat:     'raw'
 ObsMetaData:
   ObsDate:      '2017-12-30T12:30:00(UTC)'
   PulsarName:   'B2016+28'
-  MixFreq:      406
+  MixFreq:      405
 
 # Folding parameters
 Folding:
