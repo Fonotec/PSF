@@ -6,6 +6,7 @@ from astropy import units as u
 from barcen import barcen_times, barcen_freqs
 from loadData import loader
 from pathlib import Path
+from filterBank import filterBankReadMetaData
 
 def calc_central_freqs(mix_freq, throwhighestfreqaway=True):
     timevoltage = 1/(70e6) # (s), the time of each voltage measurement
@@ -48,6 +49,14 @@ class Observation:
             self.using_fits = False 
             basename = Path(filename).stem
             print(basename)
+            metadata = filterBankReadMetaData(basename+'.txt')
+            print(metadata)
+            self.psr_name = metadata['Source Name'][0]
+            print(self.psr_name)
+            self.obs_start_isot = float(metadata['Time stamp of first sample (MJD)'][0])
+            print(self.obs_start_isot)
+            self.mix_freq = float(metadata['Frequency of channel 1 (MHz)'][0])
+            print(self.mix_freq)
             raise NotImplementedError('Filterbank supported yet!')
         else:
             self.using_fits = False
