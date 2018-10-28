@@ -1,7 +1,6 @@
-# Information about the data file
-Observation:
-  FileName:       'huispulsar.fits'
-  RawData:        0                   # 1 for raw data, 0 for data with info
+# Information about the data file  
+
+FileName:       '2017-09-20-07:05:00_B0329+54.fil'
 
 # Folding parameters
 Folding:
@@ -11,7 +10,8 @@ Folding:
 # Output parameters
 Output:
   OutputDir:      './output'
-  ConvertRaw:     1             # if raw convert to fits
-  
+  SavePlots:      true
 
+ChiFit: false
 
+GrasMaaier: {}

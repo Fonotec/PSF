@@ -9,5 +9,9 @@ fi
 
 # Run PSF
 echo "Run PSF"
-../../main.py huispulsarFilterbankParam.yml
+if command -v python3 &>/dev/null; then
+    python3 ../../main.py huispulsarFilterbankParam.yml
+else 
+    python ../../main.py huispulsarFilterbankParam.yml
+fi
 
