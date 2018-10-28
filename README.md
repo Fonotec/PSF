@@ -2,21 +2,18 @@
 Welcome on the github of PSF (Pulsar Spectral Folder)! PSF is the fastest spectral folder in the local Universe (much faster than those noobs in M31). This readme will explain what the different modules in PSF work. PSF is specifically designed to use pulsar data either live or for after processing. The aim of PSF is to do this as fast as possible, faster than any previous algorithm. Till know several live features exist: live plotting the pulsar signal and live folding of the pulsar signal, the first method is especially usefull for pulsars that have a significant flux like our home pulsar B0329+54, and live folding can be used for pulsars that are fainter like our neighbors pulsar like B2016+28. Furthermore the algorithm will be able in the comming time to save data on the spot when doing simultaneously live folding and live pulsar autoput. In the after processing also determining if weather balloons are present is designed and we are able to determine the period to a very high precission by using a Chi-squared approach. The details of these different features will be discussed in the following sections.
 
 ## Requirements
-The requirements of our program are written in `requirements.txt`.  Until now the only requirements are `numpy`, `scipy`, `matplotlib`, `tkinter`, `astropy`, `numba`, `tqdm` and `ruamel.yaml`. To get your system up to date with these packages you can use the following pip command:
+The requirements of our program are written in `requirements.txt`.  Until now the requirements are `numpy`, `scipy`, `matplotlib`, `tkinter`, `astropy`, `numba`, `tqdm`, `ruamel.yaml` and `blimpy`. To get your system up to date with these packages you can use the following pip command:
 
 `pip install -r requirements.txt --user`
 
 ## The program
 In this section we describe the different module and sub routines in PSF.
 
-To try out the toold, you need some data files. An example can be obtained [here](https://www.astro.rug.nl/~camras/data/CAMRAS/obs-10-04-2018/B0329+54_10-04-2018-withP.fits.gz). 
+To try out the tools, you can run the various examples in the [`examples`](examples/) folder (just run `run.sh` in one of the various folders).
 
 ### Main file
 The main file of PSF is `main.py`, this file allowes you to run load data of an observation and run an analysis on the data.
-For folding and plotting the waterfall plots/pulse profile, you can use
-`
-./main.py -d data/obs-10-04-2018/B0329+54_10-04-2018-withP.fits.gz --nbins 1000 --nbinsdedisp 500
-`
+For folding and plotting the waterfall plots/pulse profile, you can use `main.py param.yml`, where `param.yml` is the file in which you have indicated what PSF should do. Examples of the syntax of these `.yml` files are in the `examples` folder.
 
 ### Observation file
 In the observation file `observation.py` constructs a class of Observations that allows you to get the frequency range of the observation and other properties.
