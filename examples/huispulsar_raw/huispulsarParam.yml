@@ -3,8 +3,8 @@
 FileName:       'B0329+54.2016.11.18.1038.5min.dat'
 RawData:        true
 FileFormat:     'raw'
-ObsMetaData:    
-  ObsDate:      '2016-11-18:T10:38:00.00(UTC)'
+ObsMetaData:
+  ObsDate:      '2016-11-18:T10:38:00(UTC)'
   PulsarName:   'B0329+54'
   MixFreq:      405
 
@@ -16,7 +16,6 @@ Folding:
 # Output parameters
 Output:
   OutputDir:      './output'
-  ConvertRaw:     true
   SavePlots:      true
 
 ChiFit: false
