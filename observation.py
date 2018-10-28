@@ -5,6 +5,7 @@ from pulsarsObjects import Pulsar, load_pulsar_data
 from astropy import units as u
 from barcen import barcen_times, barcen_freqs
 from loadData import loader
+from pathlib import Path
 
 def calc_central_freqs(mix_freq, throwhighestfreqaway=True):
     timevoltage = 1/(70e6) # (s), the time of each voltage measurement
@@ -43,14 +44,17 @@ class Observation:
             self.psr_name = header['SRC_NAME']
             self.obs_start_isot = header['DATE-OBS']
             self.mix_freq = header['FREQMIX']
+        elif fileformat.endswith('fil'):
+            self.using_fits = False 
+            basename = Path(filename).stem
+            print(basename)
+            raise NotImplementedError('Filterbank supported yet!')
         else:
             self.using_fits = False
             self.psr_name = cfg.ObsMetaData.PulsarName
             self.obs_start_isot = cfg.ObsMetaData.ObsDate
             self.mix_freq = cfg.ObsMetaData.MixFreq
-            if fileformat.endswith('fil'):
-                raise NotImplementedError('Filterbank supported yet!')
-            elif fileformat.endswith('raw'):
+            if fileformat.endswith('raw'):
                 assert cfg.RawData, 'Need to supply the metadata!'
                 self.data = loader(cfg.FileName).astype(np.uint32)
             else:
