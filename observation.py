@@ -55,7 +55,7 @@ class Observation:
             # Tammo-Jan doesn't store the mix frequency
             self.mix_freq = header[b'fch1']-21.668359375
             self.data = obs.data
-            raise NotImplementedError('Filterbank supported yet!')
+            #raise NotImplementedError('Filterbank supported yet!')
         else:
             self.using_fits = False
             self.psr_name = cfg.ObsMetaData.PulsarName
@@ -67,7 +67,10 @@ class Observation:
             else:
                 raise ValueError('Unrecognized format')
 
-        self.obs_start = Time(self.obs_start_isot)
+        if fileformat.endswith('fil'):
+            self.obs_start = Time(self.obs_start_isot,format='jd')
+        else:
+            self.obs_start = Time(self.obs_start_isot)
         dt = 64*512/(70e6)
         self.obs_dur = len(self.data) * dt
         self.obs_end = self.obs_start +  self.obs_dur * u.s
