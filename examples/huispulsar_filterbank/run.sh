@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Download the observation data if it is not present
-if [ ! -e 2017-09-20-07%3A05%3A00_B0329+54.fil ]
+if [ ! -e 2017-09-20-07:05:00_B0329+54.fil ]
 then 
 	echo "Dowloading the observation data"
 	./getData.sh
