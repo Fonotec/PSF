@@ -12,9 +12,10 @@ __pycache__/
 *.fits
 *.fits.gz
 
-# Files downloades from Tamma-Jan gitlab
+# Files downloades from Tammo-Jan gitlab
 filterbank.py
 sigproc.py
+psr_constants.py
 
 # Data directory on Kapteyn
 data

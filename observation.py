@@ -7,6 +7,7 @@ from barcen import barcen_times, barcen_freqs
 from loadData import loader
 from pathlib import Path
 from filterBank import filterBankReadMetaData
+from blimpy import Waterfall
 
 def calc_central_freqs(mix_freq, throwhighestfreqaway=True):
     timevoltage = 1/(70e6) # (s), the time of each voltage measurement
@@ -47,12 +48,13 @@ class Observation:
             self.mix_freq = header['FREQMIX']
         elif fileformat.endswith('fil'):
             self.using_fits = False 
-            basename = Path(filename).stem
-            metadata = filterBankReadMetaData(basename+'.txt')
-            self.psr_name = metadata['Source Name'][0]
-            self.obs_start_isot = float(metadata['Time stamp of first sample (MJD)'][0])
-            self.mix_freq = float(metadata['Frequency of channel 1 (MHz)'][0])
-            self.data = loader(cfg.FileName).astype(np.uint32)
+            obs = Waterfall(filename)
+            header = obs.header
+            self.psr_name = header[b'source_name']
+            self.obs_start_isot = header[b'tstart']
+            # Tammo-Jan doesn't store the mix frequency
+            self.mix_freq = header[b'fch1']-21.668359375
+            self.data = obs.data
             raise NotImplementedError('Filterbank supported yet!')
         else:
             self.using_fits = False
