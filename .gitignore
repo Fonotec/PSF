@@ -11,3 +11,10 @@ __pycache__/
 *.dat
 *.fits
 *.fits.gz
+
+# Files downloades from Tamma-Jan gitlab
+filterbank.py
+sigproc.py
+
+# Data directory on Kapteyn
+data

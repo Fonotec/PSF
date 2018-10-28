@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
 from collections import defaultdict
-
    
 # https://stackoverflow.com/questions/28385822/reading-data-separated-by-colon-per-line-in-python
 def filterBankReadMetaData(filename):
@@ -14,4 +13,9 @@ def filterBankReadMetaData(filename):
             score = score.rstrip('\n')
             result[name].append(score)
     return result
+
+
+
+
+
 
