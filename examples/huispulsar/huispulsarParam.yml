@@ -1,7 +1,6 @@
 # Information about the data file  
-Observation:
-  FileName:       'B0329+54_10-04-2018.fits.gz'
-  RawData:        0                   # 1 for raw data, 0 for data with info
+
+FileName:       'B0329+54_10-04-2018.fits.gz'
 
 # Folding parameters
 Folding:
@@ -11,5 +10,8 @@ Folding:
 # Output parameters
 Output:
   OutputDir:      './output'
-  ConvertRaw:     1             # if raw convert to fits
-  
+  SavePlots:      true
+
+ChiFit: false
+
+GrasMaaier: {}

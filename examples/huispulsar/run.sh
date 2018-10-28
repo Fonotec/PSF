@@ -9,5 +9,5 @@ fi
 
 # Run PSF
 echo "Run PSF"
-../../main.py huispulsarParam.yml
+python3 ../../main.py huispulsarParam.yml
 
