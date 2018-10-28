@@ -48,15 +48,11 @@ class Observation:
         elif fileformat.endswith('fil'):
             self.using_fits = False 
             basename = Path(filename).stem
-            print(basename)
             metadata = filterBankReadMetaData(basename+'.txt')
-            print(metadata)
             self.psr_name = metadata['Source Name'][0]
-            print(self.psr_name)
             self.obs_start_isot = float(metadata['Time stamp of first sample (MJD)'][0])
-            print(self.obs_start_isot)
             self.mix_freq = float(metadata['Frequency of channel 1 (MHz)'][0])
-            print(self.mix_freq)
+            self.data = loader(cfg.FileName).astype(np.uint32)
             raise NotImplementedError('Filterbank supported yet!')
         else:
             self.using_fits = False
