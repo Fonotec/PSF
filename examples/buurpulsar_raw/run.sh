@@ -9,5 +9,9 @@ fi
 
 # Run PSF
 echo "Run PSF"
-python3 ../../main.py buurpulsarRawParam.yml
+if command -v python3 &>/dev/null; then
+    python3 ../../main.py buurpulsarRawParam.yml
+else 
+    python ../../main.py buurpulsarRawParam.yml
+fi
 
