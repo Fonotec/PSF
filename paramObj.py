@@ -19,13 +19,9 @@ class AttrDict(dict):
      """ Dictionary subclass whose entries can be accessed by attributes
          (as well as normally).
      """
-     def __init__(self, *args, dict_data=None, **kwargs):
-         if dict_data is None:
-             super(AttrDict, self).__init__(*args, **kwargs)
-             self.__dict__ = self
-         else:
-             super(AttrDict, self).__init__(self.from_nested_dict(dict_data))
-             self.__dict__ = self
+     def __init__(self, *args, **kwargs):
+         super(AttrDict, self).__init__(*args, **kwargs)
+         self.__dict__ = self
  
      @staticmethod
      def from_nested_dict(data):
@@ -63,7 +59,7 @@ class Config(AttrDict):
         # Input validation can happen here
         assert 'FileName' in usercfg, 'Provide observation parameters'
         assert 'Output' in usercfg, 'Provide output information'
-        super(Config, self).__init__(dict_data=cfg) # Magic...
+        super(Config, self).__init__(AttrDict.from_nested_dict(cfg)) # Magic...
 
-        self.usercfg = AttrDict(usercfg)
-        self.defaults= AttrDict(defaults)
+        self.usercfg = AttrDict.from_nested_dict(usercfg)
+        self.defaults= AttrDict.from_nested_dict(defaults)
