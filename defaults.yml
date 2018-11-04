@@ -1,6 +1,7 @@
 # These will be used if not given in the file given by default
 
 RawData: false
+ObsMetaData: {}
 
 # Folding parameters
 Folding:
@@ -16,7 +17,7 @@ ChiFit:
   FitFunc:      'Lorentzian'   # Fit function to fit to the chisq as function of trial period. If left empty, will try all and prompt the user. 
 
 Output:
-    ConvertRaw: true
+    ConvertRaw: false
 
 
 # RFI removal scheme
