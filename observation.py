@@ -6,8 +6,8 @@ from astropy import units as u
 from barcen import barcen_times, barcen_freqs
 from loadData import loader
 from pathlib import Path
-from filterBank import filterBankReadMetaData
 from blimpy import Waterfall
+from paramObj import Config
 
 def calc_central_freqs(mix_freq, throwhighestfreqaway=True):
     timevoltage = 1/(70e6) # (s), the time of each voltage measurement
@@ -30,63 +30,57 @@ def calc_central_freqs(mix_freq, throwhighestfreqaway=True):
         return freqs
 
 class Observation:
-    def __init__(self, cfg=None, fitsfile=None):
-        if fitsfile is None:
-            fileformat = cfg.FileFormat if 'FileFormat' in cfg else cfg.FileName
+    def __init__(self, fn_or_cfg):
+        if type(fn_or_cfg) == Config:
+            cfg = fn_or_cfg
             filename = cfg.FileName
-        else:
-            fileformat="fits"
-            filename = fitsfile
+            fileformat = cfg.FileFormat if 'FileFormat' in cfg else cfg.FileName.rstrip('.gz').split('.')[-1]
+        elif type(fn_or_cfg) == str:
+            cfg = None
+            filename = fn_or_cfg
+            fileformat = filename.rstrip('.gz').split('.')[-1]
+        self.fileformat = fileformat
 
-        if fileformat.endswith('fits') or fileformat.endswith('fits.gz'):
-            self.using_fits = True
+        self.chisqperiod = None
+        if fileformat == 'fits':
             hdulist = fits.open(filename)
             header = hdulist[1].header
             self.data = hdulist[1].data
             self.psr_name = header['SRC_NAME']
             self.obs_start_isot = header['DATE-OBS']
+            self.obs_start = Time(self.obs_start_isot)
             self.mix_freq = header['FREQMIX']
-        elif fileformat.endswith('fil'):
-            self.using_fits = False 
+            if len(hdulist) > 2:
+                self.chisqperiod = hdulist[2].header['bestp']
+        elif fileformat == 'fil':
             obs = Waterfall(filename)
             header = obs.header
             self.psr_name = header[b'source_name'].decode('utf-8')[4:]
             self.obs_start_isot = header[b'tstart']
+            self.obs_start = Time(self.obs_start_isot, format='mjd')
             # Tammo-Jan doesn't store the mix frequency
             self.mix_freq = header[b'fch1']-21.668359375
-            self.data = obs.data[:,:,:255]
-            #raise NotImplementedError('Filterbank supported yet!')
+            # These files have the frequency axis in decending, and include an extra unnecessary axis.
+            print(obs.data)
+            self.data = np.squeeze(obs.data[:,:,-2::-1]).astype(np.uint16)
+            # Some files have a missing frequency list for some reason. To avoid errors after folding, add some artificial data...
+            self.data[:,~np.any(self.data, axis=0)]+=65535
         else:
-            self.using_fits = False
+            assert cfg.ObsMetaData, 'Need to supply the metadata: observation time, mixing frequency and pulsar!'
+            self.data = loader(cfg.FileName).astype(np.uint32)
+
+        if cfg is not None and cfg.ObsMetaData:
+            # Overwrite with metadata from the Config if present
             self.psr_name = cfg.ObsMetaData.PulsarName
             self.obs_start_isot = cfg.ObsMetaData.ObsDate
-            self.mix_freq = cfg.ObsMetaData.MixFreq
-            if fileformat.endswith('fil'):
-                raise NotImplementedError('Filterbank supported yet!')
-            elif fileformat.endswith('raw'):
-                assert cfg.RawData, 'Need to supply the metadata!'
-                self.data = loader(cfg.FileName).astype(np.uint32)
-            else:
-                raise ValueError('Unrecognized format')
-
-        print(self.psr_name)
-        print(self.obs_start_isot)
-        print(self.data)
-
-        if fileformat.endswith('fil'):
-            self.obs_start = Time(self.obs_start_isot,format='jd')
-        else:
             self.obs_start = Time(self.obs_start_isot)
+            self.mix_freq = cfg.ObsMetaData.MixFreq
+
         dt = 64*512/(70e6)
         self.obs_dur = len(self.data) * dt
         self.obs_end = self.obs_start +  self.obs_dur * u.s
         self.obs_times = np.arange(len(self.data)) * dt
         self.obs_middle = self.obs_dur*u.s/2 + self.obs_start
-
-        if self.using_fits and len(hdulist)>2:
-            self.chisqperiod = hdulist[2].header['bestp']
-        else:
-            self.chisqperiod = None
 
         self.pulsar = Pulsar(pulsarname=self.psr_name, tobs=self.obs_start, chisqperiod=self.chisqperiod)
 

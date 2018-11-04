@@ -60,13 +60,14 @@ if cfg.Folding:
 
     print("Done folding")
     # make a waterfall plot of the result
-    plt.matshow(foldedarray)
+    plt.matshow((foldedarray-foldedarray.mean(axis=0))/foldedarray.std(axis=0))
     if cfg.Output.SavePlots:
         plt.savefig(cfg.Output.OutputDir+"/waterfall.pdf")
     plt.show()
     print("Dedispersing")
     # do the dedispersion
     pulse_profile = dedispersion(foldedarray, obs, period, obs.pulsar.DM, freq_fold_bins=cfg.Folding.nbinsdedisp)
+    print(pulse_profile)
 
     # plot the final pulse profile
     plt.plot(pulse_profile)
@@ -74,5 +75,5 @@ if cfg.Folding:
         plt.savefig(cfg.Output.OutputDir+"/dedisp_pulse.pdf")
     plt.show()
 
-if not obs.using_fits and cfg.Output.ConvertRaw:
+if obs.fileformat != 'fits' and cfg.Output.ConvertRaw:
     raw2fits(obs.data, cfg.Output.OutputDir+"/"+Path(cfg.FileName).stem+".fits", **cfg.ObsMetaData)
