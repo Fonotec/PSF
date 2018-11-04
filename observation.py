@@ -61,7 +61,6 @@ class Observation:
             # Tammo-Jan doesn't store the mix frequency
             self.mix_freq = header[b'fch1']-21.668359375
             # These files have the frequency axis in decending, and include an extra unnecessary axis.
-            print(obs.data)
             self.data = np.squeeze(obs.data[:,:,-2::-1]).astype(np.uint16)
             # Some files have a missing frequency list for some reason. To avoid errors after folding, add some artificial data...
             self.data[:,~np.any(self.data, axis=0)]+=65535

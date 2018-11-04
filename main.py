@@ -67,7 +67,6 @@ if cfg.Folding:
     print("Dedispersing")
     # do the dedispersion
     pulse_profile = dedispersion(foldedarray, obs, period, obs.pulsar.DM, freq_fold_bins=cfg.Folding.nbinsdedisp)
-    print(pulse_profile)
 
     # plot the final pulse profile
     plt.plot(pulse_profile)
