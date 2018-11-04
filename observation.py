@@ -50,11 +50,11 @@ class Observation:
             self.using_fits = False 
             obs = Waterfall(filename)
             header = obs.header
-            self.psr_name = header[b'source_name']
+            self.psr_name = header[b'source_name'].decode('utf-8')[4:]
             self.obs_start_isot = header[b'tstart']
             # Tammo-Jan doesn't store the mix frequency
             self.mix_freq = header[b'fch1']-21.668359375
-            self.data = obs.data
+            self.data = obs.data[:,:,:255]
             #raise NotImplementedError('Filterbank supported yet!')
         else:
             self.using_fits = False
