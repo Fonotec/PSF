@@ -1,0 +1,17 @@
+# Information about the data file  
+
+FileName:       '2017-09-20-07:05:00_B0329+54.fil'
+
+# Folding parameters
+Folding:
+  nbins:          500           # Number of bins for folding 
+  nbinsdedisp:    500           # Number of bins for dedispersed profile
+
+# Output parameters
+Output:
+  OutputDir:      './output'
+  SavePlots:      true
+
+ChiFit: false
+
+GrasMaaier: {}
