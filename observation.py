@@ -69,6 +69,10 @@ class Observation:
             else:
                 raise ValueError('Unrecognized format')
 
+        print(self.psr_name)
+        print(self.obs_start_isot)
+        print(self.data)
+
         if fileformat.endswith('fil'):
             self.obs_start = Time(self.obs_start_isot,format='jd')
         else:
