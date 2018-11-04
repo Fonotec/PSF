@@ -1,0 +1,17 @@
+# Information about the data file  
+
+FileName:       'B2217_10-04-2018-withP.fits.gz'
+
+# Folding parameters
+Folding:
+  nbins:          100           # Number of bins for folding 
+  nbinsdedisp:    100           # Number of bins for dedispersed profile
+
+# Output parameters
+Output:
+  OutputDir:      './output'
+  SavePlots:      true
+
+ChiFit: false
+
+GrasMaaier: {}
