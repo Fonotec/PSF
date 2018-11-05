@@ -47,6 +47,7 @@ if cfg.GrasMaaier:
     flagparams['signific'] = cfg.GrasMaaier.STDCut
     flagparams['filtertype'] = dict(pyramid=0, tophat=1)[cfg.GrasMaaier.FilterType]
     flagparams['nwindow'] = cfg.GrasMaaier.FilterWindow
+    flagparams['badneighbors'] = cfg.GrasMaaier.BadNeighbors
     flag = flagData(twodarray, **flagparams)
 else:
     flag = (obs.data) == 0 
