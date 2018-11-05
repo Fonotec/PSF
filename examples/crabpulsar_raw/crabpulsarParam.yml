@@ -1,0 +1,23 @@
+# Information about the data file  
+
+FileName:       'B0531+21_10-04-2018.dat'
+RawData:        true
+FileFormat:     'raw'
+ObsMetaData:
+  ObsDate:      '2018-04-10T10:38:00(UTC)'
+  PulsarName:   'B0531+21'
+  MixFreq:      405
+
+# Folding parameters
+Folding:
+  nbins:          30           # Number of bins for folding 
+  nbinsdedisp:    30           # Number of bins for dedispersed profile
+
+# Output parameters
+Output:
+  OutputDir:      './output'
+  SavePlots:      true
+
+ChiFit: false
+
+GrasMaaier: {}
