@@ -12,3 +12,6 @@ __pycache__/
 *.fits
 data
 *.fits.gz
+
+# output directories
+./examples/*/output
