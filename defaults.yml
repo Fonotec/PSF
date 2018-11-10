@@ -25,3 +25,4 @@ GrasMaaier:
   STDCut:          5         # from which amount of STD do we cut
   FilterType:      'pyramid' # type of filter, 'pyramid' or 'tophat' possible.
   FilterWindow:    100001    # Number of data points to be used for the smoothed function. 
+  BadNeighbors:    4         # How many data points around the bad data point should also be ignored
