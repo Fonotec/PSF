@@ -14,10 +14,13 @@ from observation import Observation
 from paramObj import Config
 from makefitsfile import raw2fits
 
-startScreen('1.1.0')
+startScreen("1.1.0")
 
-parser = argparse.ArgumentParser(description='Pulsar folding!')
-parser.add_argument('paramfile', help='A parameter file containing all the necessary data. Overwrites any other arguments.')
+parser = argparse.ArgumentParser(description="Pulsar folding!")
+parser.add_argument(
+    "paramfile",
+    help="A parameter file containing all the necessary data. Overwrites any other arguments.",
+)
 args = parser.parse_args()
 
 # Create an object containing all useful pulsar properties
@@ -33,7 +36,7 @@ period = pulsar.period
 DM = pulsar.DM
 
 # Time resolution of the telescope
-dt = (512*64)/(70e6)
+dt = (512 * 64) / (70e6)
 
 # Array with the bandwith
 frequencyarray = obs.freq
@@ -44,36 +47,44 @@ frequencyarray = obs.freq
 if cfg.GrasMaaier:
     print("Flagging bad data")
     flagparams = dict()
-    flagparams['signific'] = cfg.GrasMaaier.STDCut
-    flagparams['filtertype'] = dict(pyramid=0, tophat=1)[cfg.GrasMaaier.FilterType]
-    flagparams['nwindow'] = cfg.GrasMaaier.FilterWindow
-    flagparams['badneighbors'] = cfg.GrasMaaier.BadNeighbors
+    flagparams["signific"] = cfg.GrasMaaier.STDCut
+    flagparams["filtertype"] = dict(pyramid=0, tophat=1)[cfg.GrasMaaier.FilterType]
+    flagparams["nwindow"] = cfg.GrasMaaier.FilterWindow
+    flagparams["badneighbors"] = cfg.GrasMaaier.BadNeighbors
     flag = flagData(twodarray, **flagparams)
 else:
-    flag = (obs.data) == 0 
+    flag = (obs.data) == 0
 
-Path(cfg.Output.OutputDir).mkdir(parents=True, exist_ok=True) 
+Path(cfg.Output.OutputDir).mkdir(parents=True, exist_ok=True)
 
 # calculate the folded array
 if cfg.Folding:
     print("Folding")
-    foldedarray = timeFolding(twodarray, cfg.Folding.nbins, period, flagged = flag, corrected_times=obs.times)
+    foldedarray = timeFolding(
+        twodarray, cfg.Folding.nbins, period, flagged=flag, corrected_times=obs.times
+    )
 
     print("Done folding")
     # make a waterfall plot of the result
-    plt.matshow((foldedarray-foldedarray.mean(axis=0))/foldedarray.std(axis=0))
+    plt.matshow((foldedarray - foldedarray.mean(axis=0)) / foldedarray.std(axis=0))
     if cfg.Output.SavePlots:
-        plt.savefig(cfg.Output.OutputDir+"/waterfall.pdf")
+        plt.savefig(cfg.Output.OutputDir + "/waterfall.pdf")
     plt.show()
     print("Dedispersing")
     # do the dedispersion
-    pulse_profile = dedispersion(foldedarray, obs, period, obs.pulsar.DM, freq_fold_bins=cfg.Folding.nbinsdedisp)
+    pulse_profile = dedispersion(
+        foldedarray, obs, period, obs.pulsar.DM, freq_fold_bins=cfg.Folding.nbinsdedisp
+    )
 
     # plot the final pulse profile
     plt.plot(pulse_profile)
     if cfg.Output.SavePlots:
-        plt.savefig(cfg.Output.OutputDir+"/dedisp_pulse.pdf")
+        plt.savefig(cfg.Output.OutputDir + "/dedisp_pulse.pdf")
     plt.show()
 
-if obs.fileformat != 'fits' and cfg.Output.ConvertRaw:
-    raw2fits(obs.data, cfg.Output.OutputDir+"/"+Path(cfg.FileName).stem+".fits", **cfg.ObsMetaData)
+if obs.fileformat != "fits" and cfg.Output.ConvertRaw:
+    raw2fits(
+        obs.data,
+        cfg.Output.OutputDir + "/" + Path(cfg.FileName).stem + ".fits",
+        **cfg.ObsMetaData
+    )

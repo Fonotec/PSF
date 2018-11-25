@@ -10,11 +10,8 @@ import astropy.units as u
 my_receiver.frequency = 405 * u.MHz
 
 
-
-
-
 import telescope
 
-my_telescope = telescope(consoleHost='console')
+my_telescope = telescope(consoleHost="console")
 
 my_telescope.getRaDec()
