@@ -6,3 +6,12 @@ numba
 tkinter
 ruamel.yaml
 blimpy
+math
+astropy
+jug
+functools
+argparse
+copy
+pathlib
+time
+
