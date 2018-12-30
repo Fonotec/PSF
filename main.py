@@ -1,18 +1,18 @@
 #!/usr/bin/env python
 # coding: utf-8
 # importing all the used modules
-import numpy as np
-import matplotlib.pyplot as plt
 import argparse
+import matplotlib.pyplot as plt
+import numpy as np
 from pathlib import Path
 
-from startscreen import startScreen
+from dispersionMeasure import dedispersion
 from folding import timeFolding
 from flagging import flagData
-from dispersionMeasure import dedispersion
+from makefitsfile import raw2fits
 from observation import Observation
 from paramObj import Config
-from makefitsfile import raw2fits
+from startscreen import startScreen
 
 startScreen('1.1.0')
 

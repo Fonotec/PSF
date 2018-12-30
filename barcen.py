@@ -1,6 +1,7 @@
 from astropy.coordinates import SkyCoord, EarthLocation
-from astropy import units as u, constants as c
 from astropy.time import Time
+from astropy import units as u
+from astropy import constants as c
 import numpy as np
 from scipy.interpolate import interp1d
 

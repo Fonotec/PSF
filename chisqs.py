@@ -1,10 +1,11 @@
+from functools import lru_cache
 from jug import TaskGenerator, mapreduce
+import numpy as np
+
 from observation import Observation
 from dispersionMeasure import dedispersion
 from folding import timeFolding
 from flagging import flagData
-import numpy as np
-from functools import lru_cache
 
 obsfilelist = ["./data/obs-10-04-2018/B0125+25-04-2018.fits",
 "./data/obs-10-04-2018/B0329+54_10-04-2018.fits",

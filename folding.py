@@ -1,8 +1,8 @@
 #!/usr/bin/env python
-import numpy as np
 import math as ma
-from tqdm import tqdm # A nice progress bar, can be installed using, even on astro computers with: pip install --user tqdm
 from numba import njit
+import numpy as np
+from tqdm import tqdm 
 
 dt = (512*64)/(70e6)
 

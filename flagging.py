@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-import numpy as np
 from numba import njit
 import numba as nb
+import numpy as np
 
 @njit
 def moving_average(a, n=3) :
