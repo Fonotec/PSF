@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # coding: utf-8
-
 import argparse
 from astropy.io import fits
+
 from loadData import loader
 
 

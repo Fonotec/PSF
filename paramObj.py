@@ -1,8 +1,8 @@
 #!/usr/bin/env python
-import numpy as np
-from ruamel.yaml import YAML
 from copy import deepcopy
+import numpy as np
 from pathlib import Path
+from ruamel.yaml import YAML
 
 # https://stackoverflow.com/questions/36831998/how-to-fill-default-parameters-in-yaml-file-using-python
 def setdefault_recursively(tgt, default):

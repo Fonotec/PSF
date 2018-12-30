@@ -1,12 +1,13 @@
-import numpy as np
 from astropy.io import fits
 from astropy.time import Time
-from pulsarsObjects import Pulsar, load_pulsar_data
 from astropy import units as u
+from blimpy import Waterfall
+import numpy as np
+from pathlib import Path
+
+from pulsarsObjects import Pulsar, load_pulsar_data
 from barcen import barcen_times, barcen_freqs
 from loadData import loader
-from pathlib import Path
-from blimpy import Waterfall
 from paramObj import Config
 
 def calc_central_freqs(mix_freq, throwhighestfreqaway=True):

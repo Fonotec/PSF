@@ -1,9 +1,10 @@
 #!/usr/bin/env python
-import numpy as np
 from astropy.time import Time
 from astropy import units as u
-import barcen
+import numpy as np
 from pathlib import Path
+
+import barcen
 
 # Loading the data
 def load_pulsar_data(pulsar_name, pulsarcat_file=Path(__file__).parent/'small-data-files/pulsarcat.csv'):
