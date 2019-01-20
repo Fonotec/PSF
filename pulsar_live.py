@@ -50,7 +50,7 @@ def data_worker(pipe):
     while True:
         if live:
             # get the package of the current time
-            a = s.recv(MTU)
+            a = s.recv()
             
             # save the data in the array
             for i in range(1,512):
@@ -60,9 +60,12 @@ def data_worker(pipe):
                 print(f"Missed {data[0]-packet_counter} packets at {packet_counter}")
             packet_counter=data[0]
 
-            localdata = data[257:] # Throwing lowest freq bin away here. Mostly for convenience, because this way it is consistent with the offline files.
+            localdata = data[256:] # Replacing lowest freq bin away here, with the counter. Mostly for convenience, because this way it is consistent with the offline files.
+            localdata[0] = data[0]
         else:
-            localdata = obs.data[counter]
+            localdata = np.zeros(256, dtype=int)
+            localdata[1:] = obs.data[counter]
+            localdata[0] = counter
             counter += 1
             sleep(1e-4)
 
@@ -79,17 +82,20 @@ def fold_worker(pipe_data, livearray, folded_fullynormed):
 
     freq_norms = np.zeros(255)
     for i in range(nframesinit):
-        freq_norms += pd_output.recv(MTU)
+        freq_norms += pd_output.recv()[1:]
     
+    counter_start = pd_output.recv()[0]
     print(freq_norms, freq_norms.min(), freq_norms.shape)
 
     foldedarray_notnormed = np.zeros(nbins)
     folding_norms = np.zeros(nbins)
     while True:
         tnow = time_ns()/1e6
-        localdata = pd_output.recv(MTU)
+        localdata = pd_output.recv()
         print(time_ns()/1e6-tnow)
-        counter += 1
+        counter = localdata[0]-counter_start
+        intensities = localdata[1:]
+        
         time = counter*dt
         delay_dispersion = -4.148e3*DM*freq**(-2)
         time += delay_dispersion
@@ -103,11 +109,11 @@ def fold_worker(pipe_data, livearray, folded_fullynormed):
         #freq_norms += localdata # Maybe this'd be good?
         np.add.at(folding_norms, indexlow, lowernorm)
         np.add.at(folding_norms, indexhigh, highernorm)
-        np.add.at(foldedarray_notnormed, indexlow, lowernorm*localdata/freq_norms)
-        np.add.at(foldedarray_notnormed, indexhigh, highernorm*localdata/freq_norms)
+        np.add.at(foldedarray_notnormed, indexlow, lowernorm*intensities/freq_norms)
+        np.add.at(foldedarray_notnormed, indexhigh, highernorm*intensities/freq_norms)
 
         for i in range(0,len(shift)-1):
-            dmdata[(counter+binshifts[i])%maxshift,i] = localdata[i]/freq_norms[i]
+            dmdata[(counter+binshifts[i])%maxshift,i] = intensities[i]/freq_norms[i]
             if freq_norms[i] == 0:
                 print('Hellppp!',i)
 
@@ -174,7 +180,7 @@ if __name__ == '__main__':
         #s.connect(('10.1.2.3',22102))
         a = s.recv(MTU) # Test it; receive one package
     else:
-        obs = Observation("data/obs-10-04-2018/B0329+54_10-04-2018-withP.fits.gz")
+        obs = Observation("examples/buurpulsar/B2016+28_10-04-2018.fits.gz")
         DM = obs.pulsar.DM
         period = obs.pulsar.apparent_period(tobs=obs.obs_middle)
 
