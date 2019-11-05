@@ -1,0 +1,22 @@
+# Information about the data file  
+
+FileName:       'B0329+54_10-04-2018.fits.gz'
+
+# Folding parameters
+Folding:
+  nbins:          500           # Number of bins for folding 
+  nbinsdedisp:    500           # Number of bins for dedispersed profile
+
+# Output parameters
+Output:
+  OutputDir:      './output'
+  SavePlots:      true
+
+ChiFit: 
+  Ntries:      1000
+  nbins_time:  1000
+  nbins_freq:  1000
+  trywidth:    1e-3
+  FitFunc:     'Lorentzian'
+
+GrasMaaier: {}
